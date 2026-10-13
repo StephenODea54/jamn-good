@@ -22,7 +22,6 @@
 		{
 			"binding": "DB",
 			"database_name": "jamn-good",
-			"migrations_dir": "../../migrations",
 			"database_id": "30d8d62b-65ba-45f0-8021-b485d34c8d4a"
 		}
 	],
