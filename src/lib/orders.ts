@@ -2,9 +2,12 @@
 // at /_emdash/admin). Called from the Stripe webhook and from the thank-you page; whichever runs
 // first creates the order and the other finds it already there.
 // Orders are kept as drafts so customer details are never published to the site.
+// Each new order also emails an alert to the contact address in Site Details.
 import { handleContentCreate, handleContentGet } from 'emdash';
 import { getDb } from 'emdash/runtime';
 import type Stripe from 'stripe';
+import { getSiteDetails } from './content';
+import { escapeHtml, FROM_ORDERS, sendEmail, SITE_URL } from './email';
 
 const COLLECTION = 'orders';
 
@@ -63,9 +66,58 @@ export async function recordOrder(
       stripe_session: session.id,
     },
   });
-  if (result.success) return 'created';
+  if (result.success) {
+    // The order is saved either way; a failed alert is only logged.
+    await sendOrderAlert(session, notes).catch((error) =>
+      console.error('[orders] alert email failed:', error instanceof Error ? error.message : error),
+    );
+    return 'created';
+  }
 
   // The webhook and the thank-you page can race; the loser hits the unique slug/session.
   if (await exists(db, slug)) return 'exists';
   throw new Error(`Couldn't save order ${session.id}: ${result.error.code} ${result.error.message}`);
+}
+
+/** Email the shop a summary of a new order, with Reply-To set to the customer. */
+async function sendOrderAlert(session: Stripe.Checkout.Session, notes: string | null | undefined) {
+  const site = await getSiteDetails();
+  const customer = session.customer_details;
+  const name = customer?.individual_name ?? customer?.name ?? 'A customer';
+  const ref = `#${orderRef(session.id)}`;
+  const total = `$${dollars(session.amount_total).toFixed(2)}`;
+  const items = itemsText(session);
+  const rows: [string, string][] = [
+    ['Name', name],
+    ['Email', customer?.email ?? ''],
+    ['Phone', customer?.phone ?? ''],
+    ['Pickup notes', notes || 'None'],
+    ['Total paid', total],
+  ];
+  const adminUrl = `${SITE_URL}/_emdash/admin`;
+
+  await sendEmail({
+    from: FROM_ORDERS,
+    to: site.email,
+    ...(customer?.email && { replyTo: { name, email: customer.email } }),
+    subject: `New order ${ref}: ${name}, ${total}`,
+    text: [
+      `New pickup order ${ref}`,
+      '',
+      items,
+      '',
+      ...rows.map(([k, v]) => `${k}: ${v}`),
+      '',
+      'Reply to this email to reach the customer.',
+      `Orders list: ${adminUrl} (Orders)`,
+    ].join('\n'),
+    html: `<div style="font-family:Georgia,serif;color:#3e3327;max-width:520px">
+  <h2 style="margin:0 0 12px">New pickup order ${escapeHtml(ref)}</h2>
+  <p style="margin:0 0 16px;white-space:pre-line">${escapeHtml(items)}</p>
+  <table style="border-collapse:collapse;font-size:14px">${rows
+    .map(([k, v]) => `<tr><td style="padding:4px 16px 4px 0;color:#7a6a58">${k}</td><td style="padding:4px 0">${escapeHtml(v)}</td></tr>`)
+    .join('')}</table>
+  <p style="margin:16px 0 0;font-size:14px">Reply to this email to reach the customer. All orders are in the <a href="${adminUrl}">admin</a> under Orders.</p>
+</div>`,
+  });
 }

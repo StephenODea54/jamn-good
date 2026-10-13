@@ -31,6 +31,12 @@
 			"bucket_name": "jamn-good-media"
 		}
 	],
+	// Cloudflare Email Sending (jamn-good.com is onboarded): order alerts and admin sign-in emails.
+	"send_email": [
+		{
+			"name": "EMAIL"
+		}
+	],
 	// Runs EmDash maintenance and scheduled publishing.
 	"triggers": {
 		"crons": [

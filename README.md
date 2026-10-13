@@ -36,6 +36,20 @@ and the thank-you page shows the pickup instructions from **Site Details**.
 - New orders appear in Stripe under **Payments**. Turn on email alerts for successful payments in
   Stripe's notification settings.
 
+### Email
+
+The site sends email through **Cloudflare Email Sending** (the `EMAIL` binding in
+`wrangler.jsonc`; jamn-good.com is set up for sending in Cloudflare). It's for one-to-one
+"transactional" email only; newsletters need a newsletter service.
+
+- **New-order alerts** go from `orders@jamn-good.com` to the contact email in **Site Details**
+  (hey@jamn-good.com, which forwards to the shop's Gmail). Replying goes straight to the customer.
+- **Admin emails** (sign-in links, invitations) are sent by a small EmDash plugin,
+  `src/plugins/cloudflare-email.ts`, from `noreply@jamn-good.com`. In local development EmDash
+  prints emails to the console instead, and the alert emails are saved under `.wrangler/tmp/email`.
+
+Incoming mail: Cloudflare Email Routing forwards hello@ and hey@jamn-good.com to the shop's Gmail.
+
 ### Orders in the admin
 
 Every paid order is also saved to **Orders** in `/_emdash/admin`, a pickup to-do list with the
