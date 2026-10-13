@@ -73,12 +73,18 @@ pnpm dev
 On first run, open
 <http://localhost:4321/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin>. It creates the
 content types and starting content from `seed/seed.json` and signs you in as a local admin (this
-shortcut only works in local development). Then upload the product photos:
+shortcut only works in local development). Then attach the product photos:
 
 ```sh
 # token from http://localhost:4321/_emdash/api/setup/dev-bypass?token=1
-EMDASH_TOKEN=ec_pat_... node scripts/upload-photos.mjs
+EMDASH_TOKEN=ec_pat_... node scripts/load-content.mjs
 ```
+
+`scripts/load-content.mjs` adds any products from `seed/seed.json` that the site doesn't have yet
+and attaches their photos from `public/images/products` (`<slug>.jpg` for the shop,
+`<slug>-tall.jpg` for the product page, `<slug>-home.jpg` for the homepage). It never overwrites
+existing entries or photos, so it's safe to re-run. Pass other collection names to load those too,
+e.g. `node scripts/load-content.mjs products site_details`.
 
 Local content lives in `.wrangler/` and is separate from the live site.
 
@@ -98,8 +104,9 @@ in `wrangler.jsonc`, and Wrangler creates their DNS records.
 4. **Straight away**, open `https://jamn-good.com/_emdash/admin` and finish the setup wizard.
    Whoever finishes it first becomes the administrator. Choose to include the sample content:
    that loads the products, events, FAQs and so on from `seed/seed.json`.
-5. Create an API token in the admin (your user settings → API tokens) and upload the photos:
-   `EMDASH_URL=https://jamn-good.com EMDASH_TOKEN=ec_pat_... node scripts/upload-photos.mjs`
+5. Create an API token in the admin (your user settings → API tokens) and load the products and
+   photos (also works if you skipped the sample content):
+   `EMDASH_URL=https://jamn-good.com EMDASH_TOKEN=ec_pat_... node scripts/load-content.mjs products site_details`
 6. Set up the Stripe webhook (see **Orders in the admin** above) and store its signing secret with
    `pnpm wrangler secret put STRIPE_WEBHOOK_SECRET`.
 

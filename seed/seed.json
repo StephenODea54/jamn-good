@@ -470,28 +470,8 @@
           "description": "A classic, homemade strawberry jam made with real fruit and simple ingredients. Sweet, fresh, and full of flavor — just like it should be.",
           "ingredients": "Strawberries, sugar, lemon juice, pectin.",
           "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
-          "rating": 5,
-          "reviews": 32,
           "home_position": 2,
           "sort_order": 10
-        }
-      },
-      {
-        "id": "product-blueberry-jam",
-        "slug": "blueberry-jam",
-        "status": "published",
-        "data": {
-          "name": "Blueberry Jam",
-          "price": 7,
-          "category": "regular",
-          "kind": "jam",
-          "description": "Plump blueberries cooked down slowly in small batches. Deep, jammy, and just a little tart — perfect on toast or swirled into yogurt.",
-          "ingredients": "Blueberries, sugar, lemon juice, pectin.",
-          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
-          "rating": 5,
-          "reviews": 24,
-          "home_position": 4,
-          "sort_order": 20
         }
       },
       {
@@ -504,12 +484,10 @@
           "category": "regular",
           "kind": "jam",
           "description": "Bold, dark, and bursting with ripe blackberries. A rich, homemade jam with just the right amount of sweetness.",
-          "ingredients": "Blackberries, sugar, lemon juice, pectin.",
+          "ingredients": "Blackberries, sugar, lemon juice, lime juice, pectin.",
           "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
-          "rating": 5,
-          "reviews": 19,
           "home_position": 1,
-          "sort_order": 30
+          "sort_order": 20
         }
       },
       {
@@ -525,26 +503,23 @@
           "description": "A bright, tangy raspberry jam made while the berries are at their best. Only a few batches each season, so grab a jar while you can.",
           "ingredients": "Raspberries, sugar, lemon juice, pectin.",
           "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
-          "rating": 5,
-          "reviews": 11,
-          "sort_order": 40
+          "sort_order": 30
         }
       },
       {
-        "id": "product-mixed-berry-jam",
-        "slug": "mixed-berry-jam",
+        "id": "product-blueberry-jam",
+        "slug": "blueberry-jam",
         "status": "published",
         "data": {
-          "name": "Mixed Berry Jam",
+          "name": "Blueberry Jam",
           "price": 7,
           "category": "regular",
           "kind": "jam",
-          "description": "Strawberries, blueberries, and blackberries all in one jar. A little bit of everything we love, made in small batches.",
-          "ingredients": "Strawberries, blueberries, blackberries, sugar, lemon juice, pectin.",
+          "description": "Plump blueberries cooked down slowly in small batches. Deep, jammy, and just a little tart — perfect on toast or swirled into yogurt.",
+          "ingredients": "Blueberries, sugar, lemon juice, pectin.",
           "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
-          "rating": 5,
-          "reviews": 17,
-          "sort_order": 50
+          "home_position": 4,
+          "sort_order": 40
         }
       },
       {
@@ -559,9 +534,7 @@
           "description": "Sweet strawberries with a gentle jalapeño kick. Amazing with cream cheese and crackers, on a burger, or anywhere you want a little heat.",
           "ingredients": "Strawberries, sugar, jalapeño peppers, lemon juice, pectin.",
           "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
-          "rating": 5,
-          "reviews": 14,
-          "sort_order": 60
+          "sort_order": 50
         }
       },
       {
@@ -576,10 +549,38 @@
           "description": "Golden, sun-ripened peaches turned into a soft, sweet jam. Tastes like summer, any time of year.",
           "ingredients": "Peaches, sugar, lemon juice, pectin.",
           "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
-          "rating": 5,
-          "reviews": 21,
           "home_position": 3,
+          "sort_order": 60
+        }
+      },
+      {
+        "id": "product-peach-mango-jam",
+        "slug": "peach-mango-jam",
+        "status": "published",
+        "data": {
+          "name": "Peach Mango Jam",
+          "price": 7,
+          "category": "regular",
+          "kind": "jam",
+          "description": "Juicy peaches and sweet, sunny mango cooked down together in small batches. Bright and a little tropical — perfect on toast, yogurt, or a warm biscuit.",
+          "ingredients": "Peaches, mangoes, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
           "sort_order": 70
+        }
+      },
+      {
+        "id": "product-strawberry-mango-jam",
+        "slug": "strawberry-mango-jam",
+        "status": "published",
+        "data": {
+          "name": "Strawberry Mango Jam",
+          "price": 7,
+          "category": "regular",
+          "kind": "jam",
+          "description": "Ripe strawberries meet golden mango in a sweet, tropical twist on a classic. Small batch, real fruit, and a little sunshine in every jar.",
+          "ingredients": "Strawberries, mangoes, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "sort_order": 80
         }
       },
       {
@@ -593,7 +594,7 @@
           "kind": "baked",
           "note": "(Limited)",
           "description": "Soft, warmly spiced pumpkin bread baked in small batches. It’s a limited seasonal treat, so grab a loaf while you can!",
-          "sort_order": 80
+          "sort_order": 90
         }
       }
     ],

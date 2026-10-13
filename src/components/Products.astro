@@ -153,13 +153,19 @@ const gridStyle =
   }
 
   .product__media {
+    width: 100%;
     height: 172px;
     display: flex;
     align-items: center;
   }
 
+  /* photos can be any size; show them at the slot's 212:176 shape */
   .product__media img {
     flex: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 212 / 176;
+    object-fit: cover;
   }
 
   .product__name a:hover {

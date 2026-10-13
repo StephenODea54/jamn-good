@@ -1,29 +1,41 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "jamn-good",
-  "main": "./src/worker.ts",
-  "compatibility_date": "2026-02-24",
-  "compatibility_flags": ["nodejs_compat"],
-  // Served at jamn-good.com; www redirects there (see src/worker.ts). Wrangler creates the DNS records.
-  "routes": [
-    { "pattern": "jamn-good.com", "custom_domain": true },
-    { "pattern": "www.jamn-good.com", "custom_domain": true }
-  ],
-  // Content database (D1) and uploaded photos (R2). Wrangler creates both on first deploy.
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "jamn-good"
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "MEDIA",
-      "bucket_name": "jamn-good-media"
-    }
-  ],
-  // Runs EmDash maintenance and scheduled publishing.
-  "triggers": {
-    "crons": ["* * * * *"]
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "jamn-good",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	// Served at jamn-good.com; www redirects there (see src/worker.ts). Wrangler creates the DNS records.
+	"routes": [
+		{
+			"pattern": "jamn-good.com",
+			"custom_domain": true
+		},
+		{
+			"pattern": "www.jamn-good.com",
+			"custom_domain": true
+		}
+	],
+	// Content database (D1) and uploaded photos (R2). Wrangler creates both on first deploy.
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "jamn-good",
+			"migrations_dir": "../../migrations",
+			"database_id": "30d8d62b-65ba-45f0-8021-b485d34c8d4a"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "MEDIA",
+			"bucket_name": "jamn-good-media"
+		}
+	],
+	// Runs EmDash maintenance and scheduled publishing.
+	"triggers": {
+		"crons": [
+			"* * * * *"
+		]
+	}
 }
