@@ -5,6 +5,8 @@ import { defineConfig } from 'astro/config';
 import emdash from 'emdash/astro';
 
 export default defineConfig({
+  // Public address; used for absolute URLs in link previews.
+  site: 'https://jamn-good.com',
   // EmDash content is read per request, so pages render on the Worker instead of at build time.
   output: 'server',
   adapter: cloudflare(),

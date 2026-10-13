@@ -124,6 +124,21 @@ export interface Store {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface Subscriber {
+  id: string;
+  slug: string | null;
+  status: string;
+  email: string;
+  subscribed_at?: string;
+  signup_page?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Treat {
   id: string;
   slug: string | null;
@@ -146,6 +161,7 @@ declare module "emdash" {
     products: Product;
     site_details: SiteDetail;
     stores: Store;
+    subscribers: Subscriber;
     treats: Treat;
   }
 }

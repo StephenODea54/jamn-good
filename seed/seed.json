@@ -454,6 +454,45 @@
           "type": "text"
         }
       ]
+    },
+    {
+      "slug": "subscribers",
+      "label": "Newsletter Subscribers",
+      "labelSingular": "Subscriber",
+      "description": "People who joined the newsletter on the website. Private: never shown on the site. Export them to your email service when you start sending.",
+      "icon": "envelope",
+      "titleField": "email",
+      "dateField": "subscribed_at",
+      "routable": false,
+      "supports": [
+        "drafts"
+      ],
+      "admin": {
+        "listColumns": [
+          "email",
+          "subscribed_at",
+          "signup_page"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "email",
+          "label": "Email",
+          "type": "string",
+          "required": true,
+          "unique": true
+        },
+        {
+          "slug": "subscribed_at",
+          "label": "Signed up",
+          "type": "datetime"
+        },
+        {
+          "slug": "signup_page",
+          "label": "Signed up on",
+          "type": "string"
+        }
+      ]
     }
   ],
   "content": {
@@ -777,7 +816,7 @@
                 {
                   "_type": "span",
                   "_key": "kf",
-                  "text": "Once a jar is opened, please keep it in the refrigerator. If you’re stocking up, you can tuck extra jars in the freezer.",
+                  "text": "Yes. Please keep your jam in the refrigerator at all times, both before and after opening. If you’re stocking up, you can tuck extra jars in the freezer.",
                   "marks": []
                 }
               ]

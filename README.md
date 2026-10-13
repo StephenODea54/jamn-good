@@ -15,6 +15,7 @@ Sign in at **`/_emdash/admin`**. Changes go live as soon as you **publish** them
 | **FAQs** | Questions and answers on the FAQ page (answers support links). |
 | **Treats** | Baked goods listed in the homepage Cookies & Treats section. |
 | **Site Details** | Contact email and social links. Instagram/Facebook icons only appear when their URL is filled in. |
+| **Newsletter Subscribers** | Everyone who joined through the "Stay in the Loop" form, with when and where they signed up. Private; never shown on the site. Export them to an email service when you start sending newsletters. |
 
 Ratings, review counts, ingredients and storage are optional. If they're blank, that part of the
 product page is hidden.
@@ -104,9 +105,15 @@ in `wrangler.jsonc`, and Wrangler creates their DNS records.
 4. **Straight away**, open `https://jamn-good.com/_emdash/admin` and finish the setup wizard.
    Whoever finishes it first becomes the administrator. Choose to include the sample content:
    that loads the products, events, FAQs and so on from `seed/seed.json`.
-5. Create an API token in the admin (your user settings → API tokens) and load the products and
-   photos (also works if you skipped the sample content):
-   `EMDASH_URL=https://jamn-good.com EMDASH_TOKEN=ec_pat_... node scripts/load-content.mjs products site_details`
+5. Create an API token in the admin (your user settings → API tokens). With it set as
+   `EMDASH_URL=https://jamn-good.com EMDASH_TOKEN=ec_pat_...` in front of each command:
+   - `node scripts/sync-schema.mjs` adds any collections or fields from `seed/seed.json` the site
+     doesn't have yet (content types are only created once, at setup; run this whenever the seed
+     gains a collection or field).
+   - `node scripts/load-content.mjs products site_details events stores faqs treats` loads the
+     starting content and product photos (also works if you skipped the sample content).
+
+   Both only add what's missing, so they're safe to re-run. Delete the token afterwards.
 6. Set up the Stripe webhook (see **Orders in the admin** above) and store its signing secret with
    `pnpm wrangler secret put STRIPE_WEBHOOK_SECRET`.
 

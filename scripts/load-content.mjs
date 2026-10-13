@@ -100,9 +100,16 @@ async function listAll(collection) {
   return out;
 }
 
+// Check every name before changing anything, so a typo doesn't stop the run halfway.
+const known = Object.keys(seed.content ?? {});
+const unknown = collections.filter((c) => !known.includes(c));
+if (unknown.length) {
+  console.error(`Unknown collection name(s): ${unknown.join(', ')}. Choose from: ${known.join(', ')}`);
+  process.exit(1);
+}
+
 for (const collection of collections) {
-  const entries = seed.content?.[collection];
-  if (!entries) throw new Error(`seed/seed.json has no content for "${collection}"`);
+  const entries = seed.content[collection];
   console.log(`${collection}:`);
   const existing = new Map((await listAll(collection)).map((e) => [e.slug, e]));
 

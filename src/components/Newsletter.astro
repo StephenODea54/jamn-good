@@ -2,6 +2,16 @@
 import { getSiteDetails } from '../lib/content';
 
 const site = await getSiteDetails();
+
+const MESSAGES: Record<string, string> = {
+  subscribed: 'Thanks! You’re on the list.',
+  already: 'You’re already on the list. Thank you!',
+  invalid: 'Please enter a valid email address.',
+  error: 'Something went wrong. Please try again.',
+};
+// Set when the form was submitted without JavaScript and redirected back here.
+const status = Astro.url.searchParams.get('newsletter') ?? '';
+const message = MESSAGES[status];
 ---
 
 <section class="newsletter" id="newsletter" aria-labelledby="newsletter-title">
@@ -15,11 +25,18 @@ const site = await getSiteDetails();
       </p>
     </div>
 
-    <form class="newsletter__form" action="#" method="post">
+    <form class="newsletter__form" action="/api/subscribe" method="post" data-newsletter>
       <label for="newsletter-email" class="visually-hidden">Email address</label>
       <input id="newsletter-email" type="email" name="email" placeholder="enter your email" autocomplete="email" required />
+      <div class="newsletter__trap" aria-hidden="true">
+        <label for="newsletter-website">Leave this empty</label>
+        <input id="newsletter-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+      </div>
       <button type="submit">Join</button>
     </form>
+    <p class="newsletter__status" role="status" data-newsletter-status data-tone={status === 'invalid' || status === 'error' ? 'error' : undefined}>
+      {message}
+    </p>
 
     <ul class="social" aria-label="Social media">
       {site.facebook && (
@@ -50,6 +67,36 @@ const site = await getSiteDetails();
     </ul>
   </div>
 </section>
+
+<script>
+  const MESSAGES: Record<string, string> = {
+    subscribed: 'Thanks! You’re on the list.',
+    already: 'You’re already on the list. Thank you!',
+    invalid: 'Please enter a valid email address.',
+    error: 'Something went wrong. Please try again.',
+  };
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter]');
+  const statusEl = document.querySelector<HTMLElement>('[data-newsletter-status]');
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button')!;
+    button.disabled = true;
+    let status = 'error';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { accept: 'application/json' } });
+      status = (await res.json()).status ?? 'error';
+    } catch {
+      // network error: keep 'error'
+    }
+    button.disabled = false;
+    if (statusEl) {
+      statusEl.textContent = MESSAGES[status] ?? MESSAGES.error;
+      if (status === 'invalid' || status === 'error') statusEl.dataset.tone = 'error';
+      else delete statusEl.dataset.tone;
+    }
+    if (status === 'subscribed' || status === 'already') form.reset();
+  });
+</script>
 
 <style>
   .newsletter {
@@ -143,6 +190,35 @@ const site = await getSiteDetails();
     background: #933f22;
   }
 
+  .newsletter__form button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  /* spam trap: off-screen, not display:none (some bots skip hidden fields) */
+  .newsletter__trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .newsletter__status {
+    position: absolute;
+    left: 489px;
+    top: 61px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    line-height: 14px;
+    color: #f2efdd;
+  }
+
+  .newsletter__status[data-tone='error'] {
+    color: #ffd2bf;
+  }
+
   .social {
     position: absolute;
     left: 847px;
@@ -183,8 +259,13 @@ const site = await getSiteDetails();
 
     .newsletter__copy,
     .newsletter__form,
+    .newsletter__status,
     .social {
       position: static;
+    }
+
+    .newsletter__status:empty {
+      display: none;
     }
 
     .newsletter__form {

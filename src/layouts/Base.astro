@@ -5,12 +5,20 @@ import CartDrawer from '../components/CartDrawer.astro';
 interface Props {
   title?: string;
   description?: string;
+  /** Link-preview image (path or URL); defaults to the logo on white */
+  image?: string;
 }
 
 const {
   title = 'Jamn Good | Small Batch Homemade Jams',
   description = 'Small batch homemade jams made with real fruit, simple ingredients, and a whole lotta love.',
+  image = '/og-image.png',
 } = Astro.props;
+
+// Link previews (Messages, Facebook, etc.) need absolute URLs on the public site.
+const origin = Astro.site ?? Astro.url;
+const pageUrl = new URL(Astro.url.pathname, origin).href;
+const imageUrl = new URL(image, origin).href;
 ---
 
 <!doctype html>
@@ -20,6 +28,18 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href={pageUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Jamn Good" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
