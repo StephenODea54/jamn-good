@@ -1,0 +1,107 @@
+---
+import Page from '../../layouts/Page.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import { formatIssueDate, getNewsletters } from '../../lib/content';
+
+// Issues are written in EmDash under Newsletters.
+const issues = await getNewsletters();
+---
+
+<Page title="Newsletter | Jamn Good" description="News from Jamn Good: new flavors, markets, and all things jam.">
+  <section class="wrap issues nl-fill">
+    <header class="page-head">
+      <p class="page-head__eyebrow eyebrow">Newsletter</p>
+      <h1 class="page-head__title">Stay in the loop.</h1>
+      <p class="page-head__lede">New flavors, markets, and all things Jamn Good.</p>
+      <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
+    </header>
+
+    {
+      issues.length > 0 ? (
+        <ol class="issues__list">
+          {issues.map((n) => (
+            <li>
+              <a href={`/newsletter/${n.slug}`}>
+                <span class="issues__date">{formatIssueDate(n.publishedAt)}</span>
+                <span class="issues__title">{n.title}</span>
+                {n.preview && <span class="issues__preview">{n.preview}</span>}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p class="issues__empty">Our first newsletter is on its way. Sign up below so you don’t miss it!</p>
+      )
+    }
+  </section>
+  <Newsletter />
+</Page>
+
+<style>
+  /* keep the signup band right above the footer on short pages */
+  :global(.page > main:has(> .nl-fill)) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nl-fill {
+    flex: 1;
+  }
+
+  .issues {
+    padding-top: 40px;
+    padding-bottom: 56px;
+  }
+
+  .issues__list {
+    max-width: 640px;
+    margin: 36px auto 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(150, 125, 95, 0.35);
+  }
+
+  .issues__list li {
+    border-bottom: 1px solid rgba(150, 125, 95, 0.35);
+  }
+
+  .issues__list a {
+    display: grid;
+    gap: 4px;
+    padding: 20px 4px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .issues__date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--rust);
+  }
+
+  .issues__title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .issues__list a:hover .issues__title {
+    color: var(--rust);
+  }
+
+  .issues__preview,
+  .issues__empty {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .issues__empty {
+    max-width: 520px;
+    margin: 36px auto 0;
+    text-align: center;
+  }
+</style>

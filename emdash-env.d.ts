@@ -37,6 +37,21 @@ export interface Faq {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface Newsletter {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  preview?: string;
+  body: PortableTextBlock[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Order {
   id: string;
   slug: string | null;
@@ -157,6 +172,7 @@ declare module "emdash" {
   interface EmDashCollections {
     events: Event;
     faqs: Faq;
+    newsletters: Newsletter;
     orders: Order;
     products: Product;
     site_details: SiteDetail;

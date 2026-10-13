@@ -5,6 +5,7 @@ const site = await getSiteDetails();
 
 const MESSAGES: Record<string, string> = {
   subscribed: 'Thanks! You’re on the list.',
+  confirm: 'Almost done! Check your inbox to confirm.',
   already: 'You’re already on the list. Thank you!',
   invalid: 'Please enter a valid email address.',
   error: 'Something went wrong. Please try again.',
@@ -71,6 +72,7 @@ const message = MESSAGES[status];
 <script>
   const MESSAGES: Record<string, string> = {
     subscribed: 'Thanks! You’re on the list.',
+    confirm: 'Almost done! Check your inbox to confirm.',
     already: 'You’re already on the list. Thank you!',
     invalid: 'Please enter a valid email address.',
     error: 'Something went wrong. Please try again.',
@@ -94,7 +96,7 @@ const message = MESSAGES[status];
       if (status === 'invalid' || status === 'error') statusEl.dataset.tone = 'error';
       else delete statusEl.dataset.tone;
     }
-    if (status === 'subscribed' || status === 'already') form.reset();
+    if (status === 'subscribed' || status === 'confirm' || status === 'already') form.reset();
   });
 </script>
 

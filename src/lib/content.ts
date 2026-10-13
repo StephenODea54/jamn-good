@@ -119,3 +119,49 @@ export async function getSiteDetails(): Promise<SiteDetails> {
     pickupInstructions: blank(d.pickup_instructions) as string | undefined,
   };
 }
+
+export interface Newsletter {
+  slug: string;
+  title: string;
+  preview?: string;
+  /** Portable Text */
+  body: unknown[];
+  publishedAt?: string;
+}
+
+function toNewsletter(slug: string, d: Data): Newsletter {
+  return {
+    slug,
+    title: String(d.title ?? ''),
+    preview: blank(d.preview) as string | undefined,
+    body: (d.body ?? []) as unknown[],
+    publishedAt: blank(d.publishedAt) as string | undefined,
+  };
+}
+
+/** Published newsletter issues, newest first. Empty if the collection hasn't been added to this site yet. */
+export async function getNewsletters(): Promise<Newsletter[]> {
+  try {
+    return (await entries('newsletters', { orderBy: { published_at: 'desc' }, limit: 200 })).map(({ slug, data }) =>
+      toNewsletter(slug, data),
+    );
+  } catch (error) {
+    console.error('[newsletters] (run scripts/sync-schema.mjs?)', error instanceof Error ? error.message : error);
+    return [];
+  }
+}
+
+export async function getNewsletter(slug: string): Promise<Newsletter | undefined> {
+  try {
+    const { entry, error } = await getEmDashEntry('newsletters', slug);
+    if (error) throw error;
+    return entry ? toNewsletter(entry.id as string, entry.data as Data) : undefined;
+  } catch (error) {
+    console.error('[newsletters]', error instanceof Error ? error.message : error);
+    return undefined;
+  }
+}
+
+/** "October 13, 2026" */
+export const formatIssueDate = (iso?: string) =>
+  iso ? new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' }) : '';

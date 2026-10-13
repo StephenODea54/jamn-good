@@ -50,6 +50,26 @@ The site sends email through **Cloudflare Email Sending** (the `EMAIL` binding i
 
 Incoming mail: Cloudflare Email Routing forwards hello@ and hey@jamn-good.com to the shop's Gmail.
 
+### Newsletter (Buttondown)
+
+Newsletters are written in the admin and sent with [Buttondown](https://buttondown.com):
+
+1. Write an issue under **Newsletters** (title = email subject, optional one-line preview, then
+   the newsletter itself, with headings, links, lists and photos).
+2. **Publish** it. It appears at jamn-good.com/newsletter, and a matching **draft** is created in
+   Buttondown (`src/plugins/newsletter-buttondown.ts`). Nothing is sent automatically.
+3. Open Buttondown, check the draft, and send it. Editing and re-publishing the issue updates the
+   Buttondown draft until it has been sent; after that, edits only change the website.
+
+Signups from the "Stay in the Loop" form are saved under **Newsletter Subscribers** and also added
+to Buttondown, which emails them a link to confirm. Unsubscribes are handled by Buttondown, so its
+list is the one that counts for sending.
+
+Setup: `pnpm wrangler secret put BUTTONDOWN_API_KEY` (from Buttondown → Settings → API). Without
+it the site still works; signups are only saved in the admin and no drafts are created. Verify
+jamn-good.com in Buttondown's sending-domain settings first: the domain's DMARC policy rejects
+unverified mail claiming to be from jamn-good.com.
+
 ### Orders in the admin
 
 Every paid order is also saved to **Orders** in `/_emdash/admin`, a pickup to-do list with the

@@ -493,6 +493,47 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "slug": "newsletters",
+      "label": "Newsletters",
+      "labelSingular": "Newsletter",
+      "description": "Write newsletter issues here. Publishing puts the issue on jamn-good.com/newsletter and creates a matching draft in Buttondown; send it from Buttondown when you're ready.",
+      "icon": "newspaper",
+      "titleField": "title",
+      "urlPattern": "/newsletter/{slug}",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview"
+      ],
+      "admin": {
+        "listColumns": [
+          "title",
+          "preview"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title (also the email subject)",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "preview",
+          "label": "Preview text (one line shown in inboxes and on the archive page)",
+          "type": "string"
+        },
+        {
+          "slug": "body",
+          "label": "Newsletter",
+          "type": "portableText",
+          "required": true,
+          "searchable": true
+        }
+      ]
     }
   ],
   "content": {

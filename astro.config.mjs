@@ -26,6 +26,14 @@ export default defineConfig({
           entrypoint: fileURLToPath(new URL('./src/plugins/cloudflare-email.ts', import.meta.url)),
           capabilities: ['hooks.email-transport:register'],
         },
+        {
+          // Publishing a Newsletter creates a matching draft in Buttondown
+          id: 'newsletter-buttondown',
+          version: '1.0.0',
+          format: 'standard',
+          entrypoint: fileURLToPath(new URL('./src/plugins/newsletter-buttondown.ts', import.meta.url)),
+          capabilities: ['content:read'],
+        },
       ],
     }),
   ],

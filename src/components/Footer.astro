@@ -4,6 +4,8 @@ const links = [
   { label: 'Shop', href: '/shop' },
   { label: 'Where to Find Us', href: '/where-to-find-us' },
   { label: 'FAQ', href: '/faq' },
+  // On desktop the mockup's left group has no room for a sixth link, so Newsletter sits by the copyright there.
+  { label: 'Newsletter', href: '/newsletter', mobileOnly: true },
   { label: 'Contact', href: '/contact' },
 ];
 const year = new Date().getFullYear();
@@ -12,14 +14,14 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="wrap">
     <nav class="footer__nav" aria-label="Footer">
-      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      {links.map((l) => <a href={l.href} class:list={{ 'footer__mobile-only': l.mobileOnly }}>{l.label}</a>)}
     </nav>
 
     <a href="/" class="footer__logo" aria-label="Jamn Good home">
       <img src="/images/logo.png" alt="Jamn Good jam + cookies" width="700" height="574" loading="lazy" />
     </a>
 
-    <p class="footer__copy">© <span data-year>{year}</span> Jamn Good | All Rights Reserved</p>
+    <p class="footer__copy"><a class="footer__copy-link" href="/newsletter">Newsletter</a>© <span data-year>{year}</span> Jamn Good | All Rights Reserved</p>
   </div>
 </footer>
 
@@ -51,8 +53,18 @@ const year = new Date().getFullYear();
     color: #645644;
   }
 
-  .footer__nav a:hover {
+  .footer__nav a:hover,
+  .footer__copy-link:hover {
     color: var(--rust);
+  }
+
+  .footer__mobile-only {
+    display: none;
+  }
+
+  .footer__copy-link {
+    margin-right: 23px;
+    color: #645644;
   }
 
   .footer__logo {
@@ -109,6 +121,14 @@ const year = new Date().getFullYear();
     .footer__copy {
       white-space: normal;
       text-align: center;
+    }
+
+    .footer__mobile-only {
+      display: inline;
+    }
+
+    .footer__copy-link {
+      display: none;
     }
   }
 </style>
