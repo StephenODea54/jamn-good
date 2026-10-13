@@ -45,6 +45,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     if (!product) {
       return json({ error: 'Something in your cart is no longer available. Please remove it and try again.' }, 409);
     }
+    if (product.outOfStock) {
+      return json({ error: `Sorry, ${product.name} just sold out. Please remove it from your cart to check out.` }, 409);
+    }
     lineItems.push({
       quantity,
       price_data: {

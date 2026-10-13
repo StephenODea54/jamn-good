@@ -5,7 +5,7 @@ import { getProducts } from '../lib/content';
 const catalog = Object.fromEntries(
   (await getProducts()).map((p) => [
     p.slug,
-    { name: p.name, price: p.price, image: p.image?.src ?? '', url: productUrl(p) },
+    { name: p.name, price: p.price, image: p.image?.src ?? '', url: productUrl(p), outOfStock: p.outOfStock },
   ]),
 );
 ---
@@ -190,6 +190,15 @@ const catalog = Object.fromEntries(
     color: var(--ink);
   }
 
+  .cart-line[data-out-of-stock] .cart-line__price {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .cart-line[data-out-of-stock] .cart-line__media {
+    opacity: 0.55;
+  }
+
   .cart-line__price {
     margin-top: 6px;
     font-family: var(--font-mono);
@@ -281,7 +290,12 @@ const catalog = Object.fromEntries(
     color: #efeddc;
   }
 
-  .cart-drawer__checkout:hover {
+  .cart-drawer__checkout:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .cart-drawer__checkout:not(:disabled):hover {
     background: #4f4c28;
   }
 

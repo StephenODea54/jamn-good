@@ -39,6 +39,7 @@ const tall = Boolean(product.hero);
       <div class="pd__gallery">
         <div class:list={['pd__photo', { 'pd__photo--tall': tall }]}>
           {hero && <img src={hero.src} alt={hero.alt} width="491" height={tall ? 570 : 481} />}
+          {product.outOfStock && <span class="stock-badge">Out of Stock</span>}
         </div>
         {
           product.gallery.length > 0 && (
@@ -76,13 +77,23 @@ const tall = Boolean(product.hero);
 
         <p class="pd__desc">{product.description}</p>
 
-        <div class="qty pd__qty" data-qty>
-          <button type="button" aria-label="Decrease quantity" data-qty-dec>−</button>
-          <input type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="Quantity" data-qty-input />
-          <button type="button" aria-label="Increase quantity" data-qty-inc>+</button>
-        </div>
-
-        <button type="button" class="btn btn--olive pd__add" data-add-to-cart={product.slug}>Add to Cart</button>
+        {
+          product.outOfStock ? (
+            <>
+              <p class="pd__stock">Sold out for now. Check back soon!</p>
+              <button type="button" class="btn btn--olive pd__add" disabled>Sold Out</button>
+            </>
+          ) : (
+            <>
+              <div class="qty pd__qty" data-qty>
+                <button type="button" aria-label="Decrease quantity" data-qty-dec>−</button>
+                <input type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="Quantity" data-qty-input />
+                <button type="button" aria-label="Increase quantity" data-qty-inc>+</button>
+              </div>
+              <button type="button" class="btn btn--olive pd__add" data-add-to-cart={product.slug}>Add to Cart</button>
+            </>
+          )
+        }
       </div>
     </div>
 
@@ -114,6 +125,12 @@ const tall = Boolean(product.hero);
 </script>
 
 <style>
+  .pd__stock {
+    margin-top: 18px;
+    font-style: italic;
+    color: var(--rust);
+  }
+
   .pd {
     padding-bottom: 64px;
   }
@@ -150,6 +167,7 @@ const tall = Boolean(product.hero);
   }
 
   .pd__photo {
+    position: relative;
     aspect-ratio: 300 / 294;
     overflow: hidden;
     border-radius: 2px;

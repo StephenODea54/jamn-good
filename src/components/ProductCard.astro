@@ -9,14 +9,21 @@ const { product: p } = Astro.props;
 const url = productUrl(p);
 ---
 
-<article class="card" data-kind={p.kind} data-limited={p.limited ? "true" : "false"}>
+<article class="card" data-kind={p.kind} data-limited={p.limited ? "true" : "false"} data-out-of-stock={p.outOfStock ? "true" : undefined}>
   <a href={url} class="card__media" tabindex="-1" aria-hidden="true">
     {p.image && <img src={p.image.src} alt="" width="300" height="294" loading="lazy" />}
+    {p.outOfStock && <span class="stock-badge">Out of Stock</span>}
   </a>
   <h3 class="card__name"><a href={url}>{p.name}</a></h3>
   <p class="card__price">{formatPrice(p.price)}</p>
   {p.note && <p class="card__note">{p.note}</p>}
-  <button type="button" class="btn btn--olive card__add" data-add-to-cart={p.slug}>Add to Cart</button>
+  {
+    p.outOfStock ? (
+      <button type="button" class="btn btn--olive card__add" disabled>Sold Out</button>
+    ) : (
+      <button type="button" class="btn btn--olive card__add" data-add-to-cart={p.slug}>Add to Cart</button>
+    )
+  }
 </article>
 
 <style>
@@ -28,6 +35,7 @@ const url = productUrl(p);
   }
 
   .card__media {
+    position: relative;
     display: block;
     width: 100%;
     aspect-ratio: 300 / 294;
@@ -41,6 +49,10 @@ const url = productUrl(p);
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
+  }
+
+  .card[data-out-of-stock] .card__media img {
+    opacity: 0.6;
   }
 
   .card__media:hover img {

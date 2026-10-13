@@ -35,6 +35,7 @@ function toProduct(slug: string, d: Data): Product {
     price: Number(d.price ?? 0),
     kind: d.kind === 'baked' ? 'baked' : 'jam',
     limited: d.category === 'limited',
+    outOfStock: d.out_of_stock === true || d.out_of_stock === 1,
     note: blank(d.note) as string | undefined,
     image: photo(d.image, alt),
     hero: photo(d.hero_image, alt),

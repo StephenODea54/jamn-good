@@ -1,5 +1,5 @@
 type Line = { slug: string; qty: number };
-type CatalogItem = { name: string; price: number; image: string; url: string };
+type CatalogItem = { name: string; price: number; image: string; url: string; outOfStock?: boolean };
 
 const KEY = 'jamn-good-cart';
 const MAX_QTY = 99;
@@ -59,7 +59,8 @@ export function initCart() {
         img.src = item.image;
         img.alt = item.name;
         node.querySelector('[data-line-name]')!.textContent = item.name;
-        node.querySelector('[data-line-price]')!.textContent = money(item.price);
+        node.querySelector('[data-line-price]')!.textContent = item.outOfStock ? 'Out of stock' : money(item.price);
+        if (item.outOfStock) node.dataset.outOfStock = '';
         node.querySelector('[data-line-count]')!.textContent = String(line.qty);
         node.querySelector('[data-line-dec]')!.setAttribute('aria-label', `Decrease ${item.name} quantity`);
         node.querySelector('[data-line-inc]')!.setAttribute('aria-label', `Increase ${item.name} quantity`);
@@ -68,11 +69,22 @@ export function initCart() {
       }),
     );
 
-    const total = lines.reduce((sum, l) => sum + catalog[l.slug].price * l.qty, 0);
+    // Items marked out of stock in EmDash stay visible so the customer knows why, but can't be bought.
+    const soldOut = lines.filter((l) => catalog[l.slug].outOfStock);
+    const total = lines.reduce((sum, l) => sum + (catalog[l.slug].outOfStock ? 0 : catalog[l.slug].price * l.qty), 0);
     subtotal.textContent = money(total);
     empty.hidden = lines.length > 0;
     list.hidden = lines.length === 0;
-    checkout.disabled = lines.length === 0;
+    checkout.disabled = lines.length === 0 || soldOut.length > 0;
+    if (soldOut.length > 0) {
+      const names = soldOut.map((l) => catalog[l.slug].name).join(', ');
+      errorBox.textContent = `${names} ${soldOut.length > 1 ? 'are' : 'is'} out of stock. Please remove ${soldOut.length > 1 ? 'them' : 'it'} to check out.`;
+      errorBox.hidden = false;
+    } else if ('stock' in errorBox.dataset) {
+      errorBox.hidden = true;
+    }
+    if (soldOut.length > 0) errorBox.dataset.stock = '';
+    else delete errorBox.dataset.stock;
   };
 
   const setQty = (slug: string, qty: number) => {
@@ -130,6 +142,7 @@ export function initCart() {
     const add = t.closest<HTMLElement>('[data-add-to-cart]');
     if (add) {
       const slug = add.dataset.addToCart!;
+      if (catalog[slug]?.outOfStock) return;
       const qtyInput = add.closest('form, [data-product]')?.querySelector<HTMLInputElement>('[data-qty-input]');
       const qty = Math.max(1, parseInt(qtyInput?.value || '1', 10) || 1);
       const current = memory.find((l) => l.slug === slug)?.qty ?? 0;

@@ -14,6 +14,8 @@ export interface Product {
   kind: 'jam' | 'baked';
   /** Limited-run item: also listed under the Limited tab */
   limited: boolean;
+  /** Toggled in EmDash: shows an Out of Stock badge and can't be added to the cart or bought */
+  outOfStock: boolean;
   /** Short tag shown under the price, e.g. "(Limited)" */
   note?: string;
   /** Square-ish photo used on the shop grid, product cards and cart */

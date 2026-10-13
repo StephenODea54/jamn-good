@@ -43,14 +43,21 @@ const gridStyle =
             <li class="product">
               <a href={productUrl(p)} class="product__media" tabindex="-1" aria-hidden="true">
                 {img && <img src={img} alt="" width={w} height={h} loading="lazy" />}
+                {p.outOfStock && <span class="stock-badge">Out of Stock</span>}
               </a>
               <h3 class="product__name">
                 <a href={productUrl(p)}>{p.name}</a>
               </h3>
               <p class="product__price">{formatPrice(p.price)}</p>
-              <button class="product__add" type="button" data-add-to-cart={p.slug}>
-                Add to Cart
-              </button>
+              {p.outOfStock ? (
+                <button class="product__add" type="button" disabled>
+                  Sold Out
+                </button>
+              ) : (
+                <button class="product__add" type="button" data-add-to-cart={p.slug}>
+                  Add to Cart
+                </button>
+              )}
             </li>
           ))
         }
@@ -153,6 +160,7 @@ const gridStyle =
   }
 
   .product__media {
+    position: relative;
     width: 100%;
     height: 172px;
     display: flex;

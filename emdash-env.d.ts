@@ -83,6 +83,7 @@ export interface Product {
   name: string;
   price: number;
   category: "regular" | "limited";
+  out_of_stock?: boolean;
   kind: "jam" | "baked";
   note?: string;
   description?: string;

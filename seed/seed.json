@@ -53,6 +53,11 @@
           }
         },
         {
+          "slug": "out_of_stock",
+          "label": "Out of stock (shows a badge and turns off Add to Cart)",
+          "type": "boolean"
+        },
+        {
           "slug": "category",
           "label": "Limited run? (also listed under the Limited tab)",
           "type": "select",
