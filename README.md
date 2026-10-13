@@ -117,7 +117,19 @@ in `wrangler.jsonc`, and Wrangler creates their DNS records.
 6. Set up the Stripe webhook (see **Orders in the admin** above) and store its signing secret with
    `pnpm wrangler secret put STRIPE_WEBHOOK_SECRET`.
 
-Later updates are just `pnpm run deploy`; content edited in the admin is untouched.
+### Automatic deploys (GitHub Actions)
+
+`.github/workflows/deploy.yml` builds every push and pull request, and deploys to Cloudflare
+whenever `main` changes. Content edited in the admin is never touched by a deploy. It needs, in the
+GitHub repo's **Settings → Secrets and variables → Actions**:
+
+- variable `CLOUDFLARE_ACCOUNT_ID` (already set)
+- secret `CLOUDFLARE_API_TOKEN`: in Cloudflare, **My Profile → API Tokens → Create Token →
+  "Edit Cloudflare Workers"** template, add **Account → D1 → Edit**, limit it to this account and
+  the jamn-good.com zone, then `gh secret set CLOUDFLARE_API_TOKEN` and paste it.
+
+Until the secret is set, the deploy step is skipped with a notice. You can still deploy by hand
+with `pnpm run deploy`.
 
 Sign-in uses passkeys. Email sign-in links need Cloudflare Email Sending set up first (see the
 EmDash Cloudflare deployment guide).

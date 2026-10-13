@@ -31,5 +31,6 @@
   },
   "emdash": {
     "seed": "seed/seed.json"
-  }
+  },
+  "packageManager": "pnpm@10.13.1"
 }
