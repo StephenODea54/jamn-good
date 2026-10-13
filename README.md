@@ -84,20 +84,26 @@ Local content lives in `.wrangler/` and is separate from the live site.
 
 ## Deploying to Cloudflare
 
-Needs a **Workers Paid** plan: the compressed Worker is about 4.7 MB, over the free plan's 3 MB limit.
+Needs a **Workers Paid** plan: the compressed Worker is about 4.7 MB, over the free plan's 3 MB
+limit. The site is served at **jamn-good.com**; `www.jamn-good.com` redirects there. Both are set
+in `wrangler.jsonc`, and Wrangler creates their DNS records.
 
 1. `pnpm wrangler login`
-2. Set the two secrets:
-   - `pnpm wrangler secret put STRIPE_SECRET_KEY`
-   - `pnpm wrangler secret put EMDASH_ENCRYPTION_KEY`: use the value from `.dev.vars`, or generate
-     one with `pnpm emdash secrets generate`. Keep a backup somewhere safe; losing it makes stored
-     secrets unreadable.
-3. `pnpm run deploy`. Wrangler creates the D1 database and R2 bucket named in `wrangler.jsonc` on the first deploy.
-4. **Straight away**, open `https://<your-site>/_emdash/admin` and finish the setup wizard. Whoever
-   finishes it first becomes the administrator. Choose to include the sample content: that loads
-   the products, events, FAQs and so on from `seed/seed.json`.
-5. Create an API token in the admin and upload the photos:
-   `EMDASH_URL=https://<your-site> EMDASH_TOKEN=... node scripts/upload-photos.mjs`
+2. `pnpm run deploy`. The first deploy also creates the D1 database, R2 bucket and session store.
+3. Set the secrets (each command asks for the value; it takes effect immediately):
+   - `pnpm wrangler secret put EMDASH_ENCRYPTION_KEY`: the same value as in `.dev.vars`. Keep a
+     backup somewhere safe; losing it makes stored secrets unreadable.
+   - `pnpm wrangler secret put STRIPE_SECRET_KEY`: the `sk_test_` key until you're ready to take
+     real payments, then the `sk_live_` key.
+4. **Straight away**, open `https://jamn-good.com/_emdash/admin` and finish the setup wizard.
+   Whoever finishes it first becomes the administrator. Choose to include the sample content:
+   that loads the products, events, FAQs and so on from `seed/seed.json`.
+5. Create an API token in the admin (your user settings → API tokens) and upload the photos:
+   `EMDASH_URL=https://jamn-good.com EMDASH_TOKEN=ec_pat_... node scripts/upload-photos.mjs`
+6. Set up the Stripe webhook (see **Orders in the admin** above) and store its signing secret with
+   `pnpm wrangler secret put STRIPE_WEBHOOK_SECRET`.
+
+Later updates are just `pnpm run deploy`; content edited in the admin is untouched.
 
 Sign-in uses passkeys. Email sign-in links need Cloudflare Email Sending set up first (see the
 EmDash Cloudflare deployment guide).
