@@ -23,8 +23,7 @@ mockups/
 # jar labels: template, artwork, barcodes and PDFs (kept locally)
 labels/
 
-# images dropped at the top level are mockups/reference; only the logo is tracked
+# images dropped at the top level are mockups/reference (the site's images live in public/)
 /*.png
 /*.jpg
 /*.jpeg
-!/logo.png
