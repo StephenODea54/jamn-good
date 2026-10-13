@@ -37,6 +37,10 @@
 			"name": "EMAIL"
 		}
 	],
+	// Keep Worker logs (console.error etc.) for viewing in the Cloudflare dashboard: Workers & Pages → jamn-good → Logs.
+	"observability": {
+		"enabled": true
+	},
 	// Runs EmDash maintenance and scheduled publishing.
 	"triggers": {
 		"crons": [
