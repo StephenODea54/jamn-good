@@ -1,7 +1,5 @@
 // Product types and helpers. The products themselves are edited in EmDash (see src/lib/content.ts).
 
-export type Category = 'fruit' | 'specialty' | 'limited';
-
 export interface Photo {
   src: string;
   alt: string;
@@ -13,8 +11,9 @@ export interface Product {
   slug: string;
   name: string;
   price: number;
-  category: Category;
   kind: 'jam' | 'baked';
+  /** Limited-run item: also listed under the Limited tab */
+  limited: boolean;
   /** Short tag shown under the price, e.g. "(Limited)" */
   note?: string;
   /** Square-ish photo used on the shop grid, product cards and cart */
@@ -35,10 +34,11 @@ export interface Product {
   reviews?: number;
 }
 
-export const categories: { id: 'all' | Category; label: string }[] = [
+/** Shop page tabs. Jams and Baked Goods filter by type; Limited shows anything marked limited. */
+export const shopTabs: { id: 'all' | 'jam' | 'baked' | 'limited'; label: string }[] = [
   { id: 'all', label: 'All' },
-  { id: 'fruit', label: 'Fruit' },
-  { id: 'specialty', label: 'Specialty' },
+  { id: 'jam', label: 'Jams' },
+  { id: 'baked', label: 'Baked Goods' },
   { id: 'limited', label: 'Limited' },
 ];
 

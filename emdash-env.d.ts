@@ -97,7 +97,7 @@ export interface Product {
   status: string;
   name: string;
   price: number;
-  category: "fruit" | "specialty" | "limited";
+  category: "regular" | "limited";
   kind: "jam" | "baked";
   note?: string;
   description?: string;

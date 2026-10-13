@@ -1,7 +1,7 @@
 ---
 import Page from '../../layouts/Page.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { categories } from '../../data/products';
+import { shopTabs } from '../../data/products';
 import { getProducts } from '../../lib/content';
 
 const products = await getProducts();
@@ -19,9 +19,9 @@ const products = await getProducts();
         <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
       </header>
 
-      <div class="tabs" role="group" aria-label="Filter jams">
+      <div class="tabs" role="group" aria-label="Filter products">
         {
-          categories.map((c, i) => (
+          shopTabs.map((c, i) => (
             <button type="button" class="tabs__tab" aria-pressed={i === 0 ? 'true' : 'false'} data-filter={c.id}>
               {c.label}
             </button>
@@ -32,14 +32,14 @@ const products = await getProducts();
       <div class="shop__grid" data-grid>
         {products.map((p) => <ProductCard product={p} />)}
       </div>
-      <p class="shop__empty" data-empty hidden>No jams in this category right now — check back soon!</p>
+      <p class="shop__empty" data-empty hidden>Nothing here right now — check back soon!</p>
     </div>
   </section>
 </Page>
 
 <script>
   const tabs = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const cards = document.querySelectorAll<HTMLElement>('[data-grid] [data-category]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-grid] [data-kind]');
   const empty = document.querySelector<HTMLElement>('[data-empty]');
 
   tabs.forEach((tab) =>
@@ -48,7 +48,9 @@ const products = await getProducts();
       tabs.forEach((t) => t.setAttribute('aria-pressed', String(t === tab)));
       let shown = 0;
       cards.forEach((card) => {
-        const match = filter === 'all' || card.dataset.category === filter;
+        const match =
+          filter === 'all' ||
+          (filter === 'limited' ? card.dataset.limited === 'true' : card.dataset.kind === filter);
         card.hidden = !match;
         if (match) shown++;
       });
@@ -175,6 +177,16 @@ const products = await getProducts();
   }
 
   @media (max-width: 560px) {
+    /* keep "Baked Goods" on one line on phones */
+    .tabs__tab {
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .tabs__tab:first-child {
+      flex-basis: 52px;
+    }
+
     .shop__grid > :global(*) {
       flex-basis: min(340px, 100%);
     }

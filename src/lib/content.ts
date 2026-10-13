@@ -1,7 +1,7 @@
 // Reads site content from EmDash and shapes it for the components.
 // Content is edited at /_emdash/admin; the collections are defined in seed/seed.json.
 import { getEmDashCollection, getEmDashEntry } from 'emdash';
-import type { Category, Photo, Product } from '../data/products';
+import type { Photo, Product } from '../data/products';
 import type { MarketEvent, Store } from '../data/markets';
 
 type Data = Record<string, any>;
@@ -33,8 +33,8 @@ function toProduct(slug: string, d: Data): Product {
     slug,
     name,
     price: Number(d.price ?? 0),
-    category: (d.category ?? 'fruit') as Category,
     kind: d.kind === 'baked' ? 'baked' : 'jam',
+    limited: d.category === 'limited',
     note: blank(d.note) as string | undefined,
     image: photo(d.image, alt),
     hero: photo(d.hero_image, alt),

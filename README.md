@@ -9,7 +9,7 @@ Sign in at **`/_emdash/admin`**. Changes go live as soon as you **publish** them
 
 | Collection | What it controls |
 | --- | --- |
-| **Products** | Everything in the shop: name, price, category (Fruit / Specialty / Limited), type (jam or baked), photos, description, ingredients, storage. **Homepage position** (1 to 4) puts a product in the homepage row; leave it blank to keep it off the homepage. **Shop order** sets the order on the Shop page. |
+| **Products** | Everything in the shop: name, price, type (jam or baked: picks the **Jams** or **Baked Goods** tab), whether it's a limited run (also lists it under **Limited**), photos, description, ingredients, storage. **Homepage position** (1 to 4) puts a product in the homepage row; leave it blank to keep it off the homepage. **Shop order** sets the order on the Shop page. |
 | **Events** | Markets and craft shows on Where to Find Us. Past events hide themselves. |
 | **Stores** | Shops that carry Jamn Good. |
 | **FAQs** | Questions and answers on the FAQ page (answers support links). |

@@ -31,8 +31,8 @@
         "listColumns": [
           "name",
           "price",
-          "category",
-          "kind"
+          "kind",
+          "category"
         ]
       },
       "fields": [
@@ -54,13 +54,12 @@
         },
         {
           "slug": "category",
-          "label": "Shop category",
+          "label": "Limited run? (also listed under the Limited tab)",
           "type": "select",
           "required": true,
           "validation": {
             "options": [
-              "fruit",
-              "specialty",
+              "regular",
               "limited"
             ]
           }
@@ -466,7 +465,7 @@
         "data": {
           "name": "Strawberry Jam",
           "price": 7,
-          "category": "fruit",
+          "category": "regular",
           "kind": "jam",
           "description": "A classic, homemade strawberry jam made with real fruit and simple ingredients. Sweet, fresh, and full of flavor — just like it should be.",
           "ingredients": "Strawberries, sugar, lemon juice, pectin.",
@@ -484,7 +483,7 @@
         "data": {
           "name": "Blueberry Jam",
           "price": 7,
-          "category": "fruit",
+          "category": "regular",
           "kind": "jam",
           "description": "Plump blueberries cooked down slowly in small batches. Deep, jammy, and just a little tart — perfect on toast or swirled into yogurt.",
           "ingredients": "Blueberries, sugar, lemon juice, pectin.",
@@ -502,7 +501,7 @@
         "data": {
           "name": "Blackberry Jam",
           "price": 7,
-          "category": "fruit",
+          "category": "regular",
           "kind": "jam",
           "description": "Bold, dark, and bursting with ripe blackberries. A rich, homemade jam with just the right amount of sweetness.",
           "ingredients": "Blackberries, sugar, lemon juice, pectin.",
@@ -538,7 +537,7 @@
         "data": {
           "name": "Mixed Berry Jam",
           "price": 7,
-          "category": "fruit",
+          "category": "regular",
           "kind": "jam",
           "description": "Strawberries, blueberries, and blackberries all in one jar. A little bit of everything we love, made in small batches.",
           "ingredients": "Strawberries, blueberries, blackberries, sugar, lemon juice, pectin.",
@@ -555,7 +554,7 @@
         "data": {
           "name": "Strawberry Jalapeño",
           "price": 7,
-          "category": "specialty",
+          "category": "regular",
           "kind": "jam",
           "description": "Sweet strawberries with a gentle jalapeño kick. Amazing with cream cheese and crackers, on a burger, or anywhere you want a little heat.",
           "ingredients": "Strawberries, sugar, jalapeño peppers, lemon juice, pectin.",
@@ -572,7 +571,7 @@
         "data": {
           "name": "Peach Jam",
           "price": 7,
-          "category": "fruit",
+          "category": "regular",
           "kind": "jam",
           "description": "Golden, sun-ripened peaches turned into a soft, sweet jam. Tastes like summer, any time of year.",
           "ingredients": "Peaches, sugar, lemon juice, pectin.",

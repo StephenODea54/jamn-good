@@ -9,7 +9,7 @@ const { product: p } = Astro.props;
 const url = productUrl(p);
 ---
 
-<article class="card" data-category={p.category}>
+<article class="card" data-kind={p.kind} data-limited={p.limited ? "true" : "false"}>
   <a href={url} class="card__media" tabindex="-1" aria-hidden="true">
     {p.image && <img src={p.image.src} alt="" width="300" height="294" loading="lazy" />}
   </a>
