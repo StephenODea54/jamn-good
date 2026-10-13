@@ -26,9 +26,30 @@ const facts = [
 ].filter((f): f is { label: string; text: string } => Boolean(f.text));
 const tall = Boolean(product.hero);
 
+// Product details for search results (price and whether it's in stock).
+const origin = (Astro.site ?? Astro.url).origin;
+const pageUrl = new URL(Astro.url.pathname, origin).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description: product.description,
+  sku: product.slug,
+  brand: { '@type': 'Brand', name: 'Jamn Good' },
+  ...(hero && { image: [new URL(hero.src, origin).href] }),
+  offers: {
+    '@type': 'Offer',
+    url: pageUrl,
+    price: product.price.toFixed(2),
+    priceCurrency: 'USD',
+    availability: product.outOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+    itemCondition: 'https://schema.org/NewCondition',
+  },
+};
+
 ---
 
-<Page title={`${product.name} | Jamn Good`} description={product.description} image={product.image?.src}>
+<Page title={`${product.name} | Jamn Good`} description={product.description} image={product.image?.src} jsonLd={jsonLd}>
   <div class="wrap pd">
     <a href="/shop" class="pd__back">
       <svg viewBox="0 0 22 12" width="22" height="12" aria-hidden="true"><path d="M21 6H2M7 1 2 6l5 5" /></svg>

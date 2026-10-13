@@ -1,6 +1,7 @@
-// Adds collections and fields from seed/seed.json that an EmDash site doesn't have yet.
+// Adds collections and fields from seed/seed.json that an EmDash site doesn't have yet, and turns on
+// SEO for collections the seed marks hasSeo.
 // The site's content types are created once at setup, so run this after adding a collection or
-// field to the seed. It never changes or removes anything that already exists.
+// field to the seed. Apart from switching SEO on, it never changes or removes anything that exists.
 //
 //   EMDASH_URL=https://jamn-good.com EMDASH_TOKEN=ec_pat_... node scripts/sync-schema.mjs
 //
@@ -46,7 +47,13 @@ for (const collection of seed.collections) {
     console.log(`+ collection ${collection.slug}`);
   } else {
     const data = found.json.data ?? {};
-    have = new Set((data.item?.fields ?? data.fields ?? []).map((f) => f.slug));
+    const current = data.item ?? data;
+    have = new Set((current.fields ?? data.fields ?? []).map((f) => f.slug));
+    // Turn on SEO (sitemap + per-entry SEO settings) where the seed asks for it.
+    if (collection.hasSeo && !current.hasSeo) {
+      await api('PUT', `/schema/collections/${collection.slug}`, { hasSeo: true });
+      console.log(`  ~ ${collection.slug}: SEO turned on`);
+    }
   }
   let added = 0;
   for (const [i, field] of fields.entries()) {

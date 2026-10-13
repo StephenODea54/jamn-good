@@ -163,7 +163,8 @@
           "label": "Shop order",
           "type": "integer"
         }
-      ]
+      ],
+      "hasSeo": true
     },
     {
       "slug": "events",
@@ -538,7 +539,8 @@
           "required": true,
           "searchable": true
         }
-      ]
+      ],
+      "hasSeo": true
     }
   ],
   "content": {

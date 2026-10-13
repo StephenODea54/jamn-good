@@ -7,18 +7,26 @@ interface Props {
   description?: string;
   /** Link-preview image (path or URL); defaults to the logo on white */
   image?: string;
+  /** schema.org structured data for search engines */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Keep this page out of search results */
+  noindex?: boolean;
 }
 
 const {
   title = 'Jamn Good | Small Batch Homemade Jams',
   description = 'Small batch homemade jams made with real fruit, simple ingredients, and a whole lotta love.',
   image = '/og-image.png',
+  jsonLd,
+  noindex = false,
 } = Astro.props;
 
 // Link previews (Messages, Facebook, etc.) need absolute URLs on the public site.
 const origin = Astro.site ?? Astro.url;
 const pageUrl = new URL(Astro.url.pathname, origin).href;
 const imageUrl = new URL(image, origin).href;
+// `<` is escaped so content can never close the script tag early.
+const structuredData = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -30,6 +38,8 @@ const imageUrl = new URL(image, origin).href;
     <link rel="icon" type="image/png" href="/images/logo.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={pageUrl} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {structuredData && <script type="application/ld+json" set:html={structuredData} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Jamn Good" />
     <meta property="og:title" content={title} />

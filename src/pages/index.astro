@@ -7,9 +7,34 @@ import Products from '../components/Products.astro';
 import Treats from '../components/Treats.astro';
 import Newsletter from '../components/Newsletter.astro';
 import Footer from '../components/Footer.astro';
+import { getSiteDetails } from '../lib/content';
+
+// Tells search engines who the business is (name, logo, location, social profiles).
+const site = await getSiteDetails();
+const origin = (Astro.site ?? Astro.url).origin;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Jamn Good',
+    url: `${origin}/`,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Jamn Good',
+    legalName: 'Jamn Good LLC',
+    url: `${origin}/`,
+    logo: `${origin}/images/logo.png`,
+    email: site.email,
+    description: 'Small batch homemade jams made with real fruit, simple ingredients, and a whole lotta love.',
+    address: { '@type': 'PostalAddress', addressLocality: 'Youngstown', addressRegion: 'OH', postalCode: '44515', addressCountry: 'US' },
+    sameAs: [site.instagram, site.facebook].filter(Boolean),
+  },
+];
 ---
 
-<Base>
+<Base jsonLd={jsonLd}>
   <div class="page">
     <Hero />
     <main>

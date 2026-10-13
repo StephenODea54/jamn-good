@@ -96,6 +96,18 @@ Secrets: `STRIPE_SECRET_KEY` goes in `.dev.vars` locally (restart `pnpm dev` aft
 and in `pnpm wrangler secret put STRIPE_SECRET_KEY` for the live site. Use the `sk_test_` key
 until you're ready to take real payments. Test card: `4242 4242 4242 4242`, any future date, any CVC.
 
+## Search engines (SEO)
+
+- `robots.txt` (`src/pages/robots.txt.ts`) keeps crawlers out of the admin, the API and order
+  pages, and lists two sitemaps: `/sitemap.xml` (EmDash: products and newsletters, from
+  collections with SEO turned on) and `/sitemap-pages.xml` (the fixed pages; add new ones in
+  `src/pages/sitemap-pages.xml.ts`).
+- Product pages include schema.org **Product** data (price, in stock / out of stock, photo); the
+  homepage includes **Organization** and **WebSite** data (name, logo, Youngstown, social links).
+- Products and Newsletters have EmDash's **SEO** panel for per-page titles/descriptions or
+  hiding a page from search.
+- Submit both sitemaps in Google Search Console and Bing Webmaster Tools.
+
 ## Running it locally
 
 Requires Node 22.16+ and pnpm.
