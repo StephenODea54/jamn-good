@@ -36,7 +36,15 @@ async function api(method, route, body) {
     },
     body: body instanceof FormData ? body : body && JSON.stringify(body),
   });
-  const json = await res.json().catch(() => ({}));
+  const text = await res.text();
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    // Not EmDash: e.g. a network filter's "page blocked" page, or the wrong EMDASH_URL.
+    const title = text.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim();
+    throw new Error(`${method} ${route} -> ${res.status}: got a web page${title ? ` ("${title}")` : ''} instead of the EmDash API. Check EMDASH_URL and that this network can reach the site.`);
+  }
   if (!res.ok || json.success === false) {
     throw new Error(`${method} ${route} -> ${res.status} ${JSON.stringify(json.error ?? json).slice(0, 300)}`);
   }
