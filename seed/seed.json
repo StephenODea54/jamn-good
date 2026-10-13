@@ -497,10 +497,9 @@
         "data": {
           "name": "Raspberry Jam",
           "price": 7,
-          "category": "limited",
+          "category": "regular",
           "kind": "jam",
-          "note": "(Limited)",
-          "description": "A bright, tangy raspberry jam made while the berries are at their best. Only a few batches each season, so grab a jar while you can.",
+          "description": "A bright, tangy raspberry jam made from ripe berries in small batches. Sweet, a little tart, and perfect on toast, scones, or swirled into yogurt.",
           "ingredients": "Raspberries, sugar, lemon juice, pectin.",
           "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
           "sort_order": 30
