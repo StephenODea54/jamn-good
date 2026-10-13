@@ -1,0 +1,183 @@
+---
+import Page from '../../layouts/Page.astro';
+import { formatPrice } from '../../data/products';
+import { getSiteDetails } from '../../lib/content';
+import { orderRef as toOrderRef, recordOrder } from '../../lib/orders';
+import { getStripe } from '../../lib/stripe';
+
+// Stripe sends the customer here with ?session_id=... after paying. The order is read back from
+// Stripe, so this page can't be faked by editing the URL.
+const sessionId = Astro.url.searchParams.get('session_id') ?? '';
+const stripe = getStripe();
+if (!stripe || !/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return Astro.redirect('/shop');
+
+let session;
+try {
+  session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] });
+} catch {
+  return Astro.redirect('/shop');
+}
+if (session.status !== 'complete') return Astro.redirect('/shop?cart=open');
+
+// Save the order to the CMS in case the Stripe webhook hasn't (or isn't set up). Never block the page on it.
+try {
+  await recordOrder(session);
+} catch (error) {
+  console.error('[checkout/success]', error instanceof Error ? error.message : error);
+}
+
+const site = await getSiteDetails();
+const cents = (n: number | null | undefined) => formatPrice((n ?? 0) / 100);
+const items = session.line_items?.data ?? [];
+const firstName = (session.customer_details?.individual_name ?? session.customer_details?.name)?.split(' ')[0];
+const orderRef = toOrderRef(sessionId);
+---
+
+<Page title="Thank you! | Jamn Good" description="Your Jamn Good order is confirmed.">
+  <section class="wrap thanks">
+    <header class="page-head">
+      <p class="page-head__eyebrow eyebrow">Order confirmed</p>
+      <h1 class="page-head__title">Thank you{firstName ? `, ${firstName}` : ''}!</h1>
+      <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
+      <p class="page-head__lede">
+        {site.pickupInstructions ?? 'We’ll be in touch soon to set up a pickup time.'}
+      </p>
+    </header>
+
+    <div class="receipt">
+      <p class="receipt__ref">Order <strong>#{orderRef}</strong></p>
+      <ul class="receipt__lines">
+        {
+          items.map((li) => (
+            <li>
+              <span>
+                {li.description} <span class="receipt__qty">× {li.quantity}</span>
+              </span>
+              <span>{cents(li.amount_subtotal)}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <dl class="receipt__totals">
+        <div class="receipt__total"><dt>Total paid</dt><dd>{cents(session.amount_total)}</dd></div>
+      </dl>
+      {
+        session.customer_details?.email && (
+          <p class="receipt__note">A receipt is on its way to {session.customer_details.email}.</p>
+        )
+      }
+      <p class="receipt__note">
+        Questions about your order? Email <a href={`mailto:${site.email}`}>{site.email}</a> and mention order #{orderRef}.
+      </p>
+    </div>
+
+    <p class="thanks__back"><a href="/shop" class="btn btn--olive">Keep Shopping</a></p>
+  </section>
+</Page>
+
+<script>
+  import { clearCart } from '../../scripts/cart';
+  clearCart();
+  document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((el) => (el.hidden = true));
+</script>
+
+<style>
+  .thanks {
+    padding: 22px 16px 80px;
+  }
+
+  .thanks .page-head__lede {
+    max-width: 520px;
+    margin-inline: auto;
+  }
+
+  .receipt {
+    max-width: 480px;
+    margin: 36px auto 0;
+    padding: 26px 30px;
+    border: 1px solid rgba(150, 125, 95, 0.32);
+    border-radius: 3px;
+    background: rgba(255, 252, 245, 0.55);
+  }
+
+  .receipt__ref {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--ink-muted);
+  }
+
+  .receipt__lines {
+    margin-top: 16px;
+    border-top: 1px solid rgba(150, 125, 95, 0.25);
+  }
+
+  .receipt__lines li,
+  .receipt__totals div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+  }
+
+  .receipt__lines li {
+    border-bottom: 1px solid rgba(150, 125, 95, 0.18);
+    font-family: var(--font-subhead);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .receipt__lines li > span:last-child,
+  .receipt__totals dd {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: #923b1f;
+  }
+
+  .receipt__qty {
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--ink-muted);
+  }
+
+  .receipt__totals {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .receipt__totals dd {
+    margin: 0;
+  }
+
+  .receipt__totals div {
+    padding: 4px 0;
+  }
+
+  .receipt__total {
+    margin-top: 6px;
+    padding-top: 10px !important;
+    border-top: 1px solid rgba(150, 125, 95, 0.25);
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .receipt__note {
+    margin-top: 14px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+
+  .receipt__note a {
+    color: var(--rust);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .thanks__back {
+    margin-top: 32px;
+    text-align: center;
+  }
+</style>

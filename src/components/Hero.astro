@@ -1,0 +1,140 @@
+---
+import Header from './Header.astro';
+---
+
+<section class="hero">
+  <div class="wrap">
+    <Header overlay />
+
+    <div class="hero__copy">
+      <h1 class="hero__title"><span>Spread a little</span> <span>happiness.</span></h1>
+      <p class="hero__lede">
+        Made with real fruit, simple ingredients,{' '}<br />and a whole lotta love.
+      </p>
+      <a href="/shop" class="hero__cta">Shop Our Jams</a>
+      <img class="ornament hero__ornament" src="/images/ornament.png" alt="" width="120" height="24" />
+    </div>
+  </div>
+
+  <div class="hero__art" role="img" aria-label="A jar of Jamn Good strawberry jam with a spoon, fresh strawberries and baby's breath on a linen cloth"></div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    height: 560px;
+    /* photo bleeds off the right edge; mirrored paper continues to the left */
+    background:
+      url('/images/bg-hero.jpg') right top / 1024px 560px no-repeat,
+      url('/images/bg-hero-fill.jpg') right 1024px top / 760px 560px repeat-x,
+      var(--paper);
+  }
+
+  .hero__copy {
+    position: absolute;
+    left: 0;
+    top: 193px;
+    width: 484px;
+    text-align: center;
+  }
+
+  .hero__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 54px;
+    line-height: 59px;
+    color: var(--ink);
+  }
+
+  .hero__title span {
+    display: block;
+  }
+
+  .hero__title span:first-child {
+    transform: translateX(3px);
+  }
+
+  .hero__title span:last-child {
+    transform: translateX(11px);
+  }
+
+  .hero__lede {
+    margin-top: 17px;
+    transform: translateX(3.5px);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 25px;
+    color: var(--ink-soft);
+  }
+
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 23px;
+    width: 170px;
+    height: 43px;
+    background: var(--rust-bg);
+    color: var(--cream);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
+  }
+
+  .hero__cta:hover {
+    background: #933f22;
+  }
+
+  .hero__ornament {
+    margin-top: 18px;
+  }
+
+  .hero__art {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .hero {
+      height: auto;
+      background: var(--paper);
+    }
+
+    .hero__copy {
+      position: static;
+      width: auto;
+      padding: 40px 16px 32px;
+    }
+
+    .hero__lede,
+    .hero__title span {
+      transform: none !important;
+    }
+
+    .hero__title {
+      font-size: clamp(38px, 8vw, 55px);
+      line-height: 1.08;
+    }
+
+    .hero__art {
+      display: block;
+      height: 380px;
+      background: url('/images/bg-hero.jpg') right bottom / 1024px 560px no-repeat;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero__lede br {
+      display: none;
+    }
+
+    .hero__art {
+      height: 300px;
+      background-position: 78% bottom;
+    }
+  }
+</style>

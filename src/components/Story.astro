@@ -1,0 +1,159 @@
+<section class="story" id="story">
+  <div class="story__photo">
+    <img
+      src="/images/story-kitchen.jpg"
+      alt="Three jars of Jamn Good strawberry jam stacked on a rustic kitchen table beside a vase of daisies and a bowl of strawberries"
+      width="504"
+      height="298"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="story__panel">
+    <div class="story__body">
+      <p class="story__eyebrow eyebrow">Our Story</p>
+      <h2 class="story__title">It all started in our kitchen.</h2>
+      <img class="ornament story__ornament" src="/images/ornament.png" alt="" width="79" height="16" />
+      <p class="story__text">
+        What began as a love for homemade jam quickly turned into a passion for sharing it with others. Jamn Good is
+        our way of spreading a little joy, one jar at a time.
+      </p>
+    </div>
+
+    <img class="story__flower" src="/images/flower-strawberry.png" alt="" width="155" height="225" loading="lazy" />
+  </div>
+</section>
+
+<style>
+  /* The photo fills the left half and grows with the viewport, keeping its
+     aspect ratio until the band reaches its max height. At 1024px it is 504x298. */
+  .story {
+    --story-h: clamp(298px, calc((50vw - 8px) * 298 / 504), 500px);
+    position: relative;
+    height: var(--story-h);
+    display: flex;
+    background: var(--paper-deep);
+  }
+
+  .story__photo {
+    flex: 0 0 calc(50% - 8px);
+    overflow: hidden;
+  }
+
+  .story__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+  }
+
+  .story__panel {
+    position: relative;
+    flex: 1;
+    background: var(--paper-deep) url('/images/bg-story.jpg') left top / auto 100% no-repeat;
+  }
+
+  .story__body {
+    position: relative;
+    z-index: 1;
+    padding: calc(62px + (var(--story-h) - 298px) / 2) 0 0 67px;
+    width: 420px;
+  }
+
+  .story__eyebrow {
+    margin-top: -1px;
+    width: 302px;
+    text-align: center;
+    font-size: 11.7px;
+    line-height: 20px;
+    letter-spacing: 0.7px;
+    color: #9e431e;
+  }
+
+  .story__title {
+    margin-top: 8px;
+    margin-left: 1px;
+    font-family: var(--font-display);
+    font-size: 26.2px;
+    font-weight: 600;
+    line-height: 36px;
+    white-space: nowrap;
+    color: #34291d;
+  }
+
+  .story__ornament {
+    margin: 11px 0 0 112px;
+  }
+
+  .story__text {
+    margin-top: 22px;
+    width: 325px;
+    font-size: 12.25px;
+    line-height: 20px;
+    color: var(--ink-soft);
+  }
+
+
+  .story__flower {
+    position: absolute;
+    left: 351px;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 1023px) {
+    .story {
+      height: auto;
+      flex-direction: column;
+    }
+
+    .story__panel {
+      background-size: cover;
+    }
+
+    .story__photo {
+      flex: none;
+    }
+
+    .story__photo img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 504 / 298;
+    }
+
+    .story__body {
+      width: auto;
+      max-width: 560px;
+      padding: 36px 16px 48px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .story__eyebrow {
+      width: auto;
+    }
+
+    .story__title {
+      white-space: normal;
+      font-size: 24px;
+      margin-left: 0;
+    }
+
+    .story__ornament {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .story__ornament {
+      margin-top: 8px;
+    }
+
+    .story__text {
+      width: auto;
+    }
+
+    .story__flower {
+      display: none;
+    }
+  }
+</style>

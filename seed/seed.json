@@ -1,0 +1,970 @@
+{
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "defaultLocale": "en",
+  "meta": {
+    "name": "Jamn Good",
+    "description": "Content model and starting content for the Jamn Good site",
+    "author": "Jamn Good"
+  },
+  "settings": {
+    "title": "Jamn Good",
+    "tagline": "Small batch homemade jams",
+    "timezone": "America/New_York"
+  },
+  "collections": [
+    {
+      "slug": "products",
+      "label": "Products",
+      "labelSingular": "Product",
+      "description": "Jams and baked goods shown in the shop.",
+      "icon": "storefront",
+      "urlPattern": "/shop/{slug}",
+      "titleField": "name",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "search"
+      ],
+      "admin": {
+        "listColumns": [
+          "name",
+          "price",
+          "category",
+          "kind"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Name",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "price",
+          "label": "Price (USD)",
+          "type": "number",
+          "required": true,
+          "validation": {
+            "min": 0
+          }
+        },
+        {
+          "slug": "category",
+          "label": "Shop category",
+          "type": "select",
+          "required": true,
+          "validation": {
+            "options": [
+              "fruit",
+              "specialty",
+              "limited"
+            ]
+          }
+        },
+        {
+          "slug": "kind",
+          "label": "Type",
+          "type": "select",
+          "required": true,
+          "validation": {
+            "options": [
+              "jam",
+              "baked"
+            ]
+          }
+        },
+        {
+          "slug": "note",
+          "label": "Badge under the price, e.g. (Limited)",
+          "type": "string"
+        },
+        {
+          "slug": "description",
+          "label": "Description",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "ingredients",
+          "label": "Ingredients",
+          "type": "text"
+        },
+        {
+          "slug": "storage",
+          "label": "Storage & shelf life",
+          "type": "text"
+        },
+        {
+          "slug": "image",
+          "label": "Shop photo (square)",
+          "type": "image"
+        },
+        {
+          "slug": "hero_image",
+          "label": "Product page photo (optional, taller)",
+          "type": "image"
+        },
+        {
+          "slug": "gallery",
+          "label": "Product page gallery",
+          "type": "repeater",
+          "validation": {
+            "maxItems": 6,
+            "subFields": [
+              {
+                "slug": "photo",
+                "label": "Photo",
+                "type": "image"
+              }
+            ]
+          }
+        },
+        {
+          "slug": "home_image",
+          "label": "Homepage photo (optional, wide)",
+          "type": "image"
+        },
+        {
+          "slug": "home_position",
+          "label": "Homepage position (1-4, leave blank to hide)",
+          "type": "integer",
+          "validation": {
+            "min": 1,
+            "max": 12
+          }
+        },
+        {
+          "slug": "rating",
+          "label": "Star rating (1-5, optional)",
+          "type": "integer",
+          "validation": {
+            "min": 1,
+            "max": 5
+          }
+        },
+        {
+          "slug": "reviews",
+          "label": "Number of reviews (optional)",
+          "type": "integer",
+          "validation": {
+            "min": 0
+          }
+        },
+        {
+          "slug": "sort_order",
+          "label": "Shop order",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "slug": "events",
+      "label": "Events",
+      "labelSingular": "Event",
+      "description": "Markets and craft shows on Where to Find Us. Past events hide themselves.",
+      "icon": "calendar",
+      "titleField": "name",
+      "dateField": "date",
+      "supports": [
+        "drafts"
+      ],
+      "admin": {
+        "listColumns": [
+          "name",
+          "date",
+          "town"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Event name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "date",
+          "label": "Date",
+          "type": "datetime",
+          "required": true
+        },
+        {
+          "slug": "town",
+          "label": "Town",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "start_time",
+          "label": "Start time, e.g. 10:00 AM",
+          "type": "string"
+        },
+        {
+          "slug": "end_time",
+          "label": "End time, e.g. 4:00 PM",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "slug": "stores",
+      "label": "Stores",
+      "labelSingular": "Store",
+      "description": "Shops that carry Jamn Good, on Where to Find Us.",
+      "icon": "map-pin",
+      "titleField": "name",
+      "supports": [
+        "drafts"
+      ],
+      "admin": {
+        "listColumns": [
+          "name",
+          "branch",
+          "city"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Store name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "branch",
+          "label": "Branch / location name",
+          "type": "string"
+        },
+        {
+          "slug": "street",
+          "label": "Street address",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "city",
+          "label": "City, state, ZIP",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "color",
+          "label": "Brand colour for the name (hex, e.g. #c8102e)",
+          "type": "string"
+        },
+        {
+          "slug": "sort_order",
+          "label": "Order",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "slug": "faqs",
+      "label": "FAQs",
+      "labelSingular": "FAQ",
+      "description": "Questions on the FAQ page.",
+      "icon": "question",
+      "titleField": "question",
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
+      "admin": {
+        "listColumns": [
+          "question",
+          "sort_order"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "question",
+          "label": "Question",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "answer",
+          "label": "Answer",
+          "type": "portableText",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "sort_order",
+          "label": "Order",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "slug": "treats",
+      "label": "Treats",
+      "labelSingular": "Treat",
+      "description": "Baked goods listed in the homepage Cookies & Treats section and the FAQ.",
+      "icon": "cookie",
+      "titleField": "name",
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "sort_order",
+          "label": "Order",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "slug": "site_details",
+      "label": "Site Details",
+      "labelSingular": "Site Details",
+      "description": "Contact email and social links used across the site. Keep a single entry.",
+      "icon": "gear",
+      "titleField": "label",
+      "fields": [
+        {
+          "slug": "label",
+          "label": "Label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "email",
+          "label": "Contact email",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "facebook_url",
+          "label": "Facebook URL",
+          "type": "url"
+        },
+        {
+          "slug": "instagram_url",
+          "label": "Instagram URL",
+          "type": "url"
+        },
+        {
+          "slug": "pickup_instructions",
+          "label": "Pickup instructions shown after checkout",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "slug": "orders",
+      "label": "Orders",
+      "labelSingular": "Order",
+      "description": "Paid online orders, added automatically from Stripe. Update the status as you go; customer details are private and never shown on the site.",
+      "icon": "receipt",
+      "titleField": "order_number",
+      "dateField": "paid_at",
+      "routable": false,
+      "supports": [
+        "drafts"
+      ],
+      "admin": {
+        "listColumns": [
+          "order_number",
+          "pickup_status",
+          "customer_name",
+          "total"
+        ]
+      },
+      "fields": [
+        {
+          "slug": "order_number",
+          "label": "Order number",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "pickup_status",
+          "label": "Status",
+          "type": "select",
+          "required": true,
+          "defaultValue": "new",
+          "validation": {
+            "options": [
+              "new",
+              "contacted",
+              "ready",
+              "picked_up",
+              "cancelled"
+            ]
+          }
+        },
+        {
+          "slug": "customer_name",
+          "label": "Customer name",
+          "type": "string"
+        },
+        {
+          "slug": "email",
+          "label": "Email",
+          "type": "string"
+        },
+        {
+          "slug": "phone",
+          "label": "Phone",
+          "type": "string"
+        },
+        {
+          "slug": "items",
+          "label": "Items",
+          "type": "text"
+        },
+        {
+          "slug": "pickup_notes",
+          "label": "Customer's pickup notes",
+          "type": "text"
+        },
+        {
+          "slug": "total",
+          "label": "Total paid (USD)",
+          "type": "number"
+        },
+        {
+          "slug": "paid_at",
+          "label": "Paid at",
+          "type": "datetime"
+        },
+        {
+          "slug": "stripe_link",
+          "label": "Open in Stripe",
+          "type": "url"
+        },
+        {
+          "slug": "stripe_session",
+          "label": "Stripe checkout session (filled in automatically)",
+          "type": "string",
+          "unique": true
+        },
+        {
+          "slug": "notes",
+          "label": "Your notes",
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "content": {
+    "products": [
+      {
+        "id": "product-strawberry-jam",
+        "slug": "strawberry-jam",
+        "status": "published",
+        "data": {
+          "name": "Strawberry Jam",
+          "price": 7,
+          "category": "fruit",
+          "kind": "jam",
+          "description": "A classic, homemade strawberry jam made with real fruit and simple ingredients. Sweet, fresh, and full of flavor — just like it should be.",
+          "ingredients": "Strawberries, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "rating": 5,
+          "reviews": 32,
+          "home_position": 2,
+          "sort_order": 10
+        }
+      },
+      {
+        "id": "product-blueberry-jam",
+        "slug": "blueberry-jam",
+        "status": "published",
+        "data": {
+          "name": "Blueberry Jam",
+          "price": 7,
+          "category": "fruit",
+          "kind": "jam",
+          "description": "Plump blueberries cooked down slowly in small batches. Deep, jammy, and just a little tart — perfect on toast or swirled into yogurt.",
+          "ingredients": "Blueberries, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "rating": 5,
+          "reviews": 24,
+          "home_position": 4,
+          "sort_order": 20
+        }
+      },
+      {
+        "id": "product-blackberry-jam",
+        "slug": "blackberry-jam",
+        "status": "published",
+        "data": {
+          "name": "Blackberry Jam",
+          "price": 7,
+          "category": "fruit",
+          "kind": "jam",
+          "description": "Bold, dark, and bursting with ripe blackberries. A rich, homemade jam with just the right amount of sweetness.",
+          "ingredients": "Blackberries, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "rating": 5,
+          "reviews": 19,
+          "home_position": 1,
+          "sort_order": 30
+        }
+      },
+      {
+        "id": "product-raspberry-jam",
+        "slug": "raspberry-jam",
+        "status": "published",
+        "data": {
+          "name": "Raspberry Jam",
+          "price": 7,
+          "category": "limited",
+          "kind": "jam",
+          "note": "(Limited)",
+          "description": "A bright, tangy raspberry jam made while the berries are at their best. Only a few batches each season, so grab a jar while you can.",
+          "ingredients": "Raspberries, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "rating": 5,
+          "reviews": 11,
+          "sort_order": 40
+        }
+      },
+      {
+        "id": "product-mixed-berry-jam",
+        "slug": "mixed-berry-jam",
+        "status": "published",
+        "data": {
+          "name": "Mixed Berry Jam",
+          "price": 7,
+          "category": "fruit",
+          "kind": "jam",
+          "description": "Strawberries, blueberries, and blackberries all in one jar. A little bit of everything we love, made in small batches.",
+          "ingredients": "Strawberries, blueberries, blackberries, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "rating": 5,
+          "reviews": 17,
+          "sort_order": 50
+        }
+      },
+      {
+        "id": "product-strawberry-jalapeno-jam",
+        "slug": "strawberry-jalapeno-jam",
+        "status": "published",
+        "data": {
+          "name": "Strawberry Jalapeño",
+          "price": 7,
+          "category": "specialty",
+          "kind": "jam",
+          "description": "Sweet strawberries with a gentle jalapeño kick. Amazing with cream cheese and crackers, on a burger, or anywhere you want a little heat.",
+          "ingredients": "Strawberries, sugar, jalapeño peppers, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "rating": 5,
+          "reviews": 14,
+          "sort_order": 60
+        }
+      },
+      {
+        "id": "product-peach-jam",
+        "slug": "peach-jam",
+        "status": "published",
+        "data": {
+          "name": "Peach Jam",
+          "price": 7,
+          "category": "fruit",
+          "kind": "jam",
+          "description": "Golden, sun-ripened peaches turned into a soft, sweet jam. Tastes like summer, any time of year.",
+          "ingredients": "Peaches, sugar, lemon juice, pectin.",
+          "storage": "Good for 6 months in the refrigerator or 1 year in the freezer.",
+          "rating": 5,
+          "reviews": 21,
+          "home_position": 3,
+          "sort_order": 70
+        }
+      },
+      {
+        "id": "product-pumpkin-bread",
+        "slug": "pumpkin-bread",
+        "status": "published",
+        "data": {
+          "name": "Pumpkin Bread",
+          "price": 10,
+          "category": "limited",
+          "kind": "baked",
+          "note": "(Limited)",
+          "description": "Soft, warmly spiced pumpkin bread baked in small batches. It’s a limited seasonal treat, so grab a loaf while you can!",
+          "sort_order": 80
+        }
+      }
+    ],
+    "events": [
+      {
+        "id": "event-1",
+        "slug": "canfield-craft-show-2026",
+        "status": "published",
+        "data": {
+          "name": "Canfield Craft Show",
+          "date": "2026-12-05T12:00:00.000Z",
+          "town": "Canfield, OH",
+          "start_time": "10:00 AM",
+          "end_time": "4:00 PM"
+        }
+      }
+    ],
+    "stores": [
+      {
+        "id": "store-1",
+        "slug": "giant-eagle-liberty",
+        "status": "published",
+        "data": {
+          "name": "Giant Eagle",
+          "branch": "Liberty",
+          "street": "4700 Belmont Ave",
+          "city": "Youngstown, OH 44505",
+          "color": "#c8102e",
+          "sort_order": 10
+        }
+      }
+    ],
+    "faqs": [
+      {
+        "id": "faq-1",
+        "slug": "where-can-i-buy-jamn-good",
+        "status": "published",
+        "data": {
+          "question": "Where can I buy Jamn Good?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "k7",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "k1",
+                  "href": "/shop"
+                },
+                {
+                  "_type": "link",
+                  "_key": "k4",
+                  "href": "/where-to-find-us"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k0",
+                  "text": "You can find us in local stores, at markets and events around the area, on social media, or by ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2",
+                  "text": "ordering online",
+                  "marks": [
+                    "k1"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k3",
+                  "text": ". Check ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k5",
+                  "text": "where to find us",
+                  "marks": [
+                    "k4"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k6",
+                  "text": " for our next event.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 10
+        }
+      },
+      {
+        "id": "faq-2",
+        "slug": "what-flavors-do-you-make",
+        "status": "published",
+        "data": {
+          "question": "What flavors do you make?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "kc",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "k9",
+                  "href": "/shop"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k8",
+                  "text": "Right now we make Strawberry, Blueberry, Blackberry, Raspberry, Mixed Berry, Strawberry Jalapeño, and Peach. Raspberry is a limited batch, so grab it while it lasts! Every jar is $7.00. ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "ka",
+                  "text": "Browse the shop",
+                  "marks": [
+                    "k9"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "kb",
+                  "text": " to see them all.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 20
+        }
+      },
+      {
+        "id": "faq-3",
+        "slug": "how-long-do-the-jams-last",
+        "status": "published",
+        "data": {
+          "question": "How long do the jams last?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "ke",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kd",
+                  "text": "Our jams stay fresh for up to 6 months in the refrigerator, or up to 1 year in the freezer.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 30
+        }
+      },
+      {
+        "id": "faq-4",
+        "slug": "do-the-jams-need-to-be-refrigerated",
+        "status": "published",
+        "data": {
+          "question": "Do the jams need to be refrigerated?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "kg",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kf",
+                  "text": "Once a jar is opened, please keep it in the refrigerator. If you’re stocking up, you can tuck extra jars in the freezer.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 40
+        }
+      },
+      {
+        "id": "faq-5",
+        "slug": "do-you-ship",
+        "status": "published",
+        "data": {
+          "question": "Do you ship?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "kl",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "ki",
+                  "href": "/#newsletter"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kh",
+                  "text": "We don’t offer retail shipping at this time. ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "kj",
+                  "text": "Join our newsletter",
+                  "marks": [
+                    "ki"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "kk",
+                  "text": " and we’ll let you know as soon as we do!",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 50
+        }
+      },
+      {
+        "id": "faq-6",
+        "slug": "do-you-offer-wholesale",
+        "status": "published",
+        "data": {
+          "question": "Do you offer wholesale?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "kq",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "kn",
+                  "href": "/contact?topic=wholesale"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "km",
+                  "text": "We’d love to hear from you! ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "ko",
+                  "text": "Send us a wholesale inquiry",
+                  "marks": [
+                    "kn"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "kp",
+                  "text": " with a little about your shop and we’ll be in touch.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 60
+        }
+      },
+      {
+        "id": "faq-7",
+        "slug": "do-you-make-cookies-too",
+        "status": "published",
+        "data": {
+          "question": "Do you make cookies too?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "kv",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "ks",
+                  "href": "/contact?topic=events"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kr",
+                  "text": "We do! We bake custom cookies for weddings, parties, and other special events, plus treats like Iced Maple Cinnamon Bread, Pumpkin Rolls, and Caramel Cups. ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "kt",
+                  "text": "Tell us about your event",
+                  "marks": [
+                    "ks"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "ku",
+                  "text": " and we’ll help you plan your order.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 70
+        }
+      }
+    ],
+    "treats": [
+      {
+        "id": "treat-1",
+        "slug": "iced-maple-cinnamon-bread",
+        "status": "published",
+        "data": {
+          "name": "Iced Maple Cinnamon Bread",
+          "sort_order": 10
+        }
+      },
+      {
+        "id": "treat-2",
+        "slug": "pumpkin-rolls",
+        "status": "published",
+        "data": {
+          "name": "Pumpkin Rolls",
+          "sort_order": 20
+        }
+      },
+      {
+        "id": "treat-3",
+        "slug": "caramel-cups",
+        "status": "published",
+        "data": {
+          "name": "Caramel Cups",
+          "sort_order": 30
+        }
+      }
+    ],
+    "site_details": [
+      {
+        "id": "site-details",
+        "slug": "site-details",
+        "status": "published",
+        "data": {
+          "label": "Contact & social",
+          "email": "hey@jamn-good.com",
+          "facebook_url": "https://www.facebook.com/jamngood/",
+          "pickup_instructions": "Thanks for your order! We'll text or email you within a day to set up a pickup time.",
+          "instagram_url": "https://www.instagram.com/jamngood/"
+        }
+      }
+    ]
+  }
+}

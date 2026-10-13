@@ -1,0 +1,172 @@
+---
+import { PortableText } from 'emdash/ui';
+import Page from '../layouts/Page.astro';
+import { getFaqs } from '../lib/content';
+
+// Questions and answers are edited in EmDash under FAQs.
+const faqs = await getFaqs();
+---
+
+<Page title="FAQ | Jamn Good" description="Answers to common questions about Jamn Good jams.">
+  <section class="faq">
+    <img class="faq__botanical" src="/images/faq-botanical.png" alt="" width="166" height="379" />
+
+    <div class="wrap">
+      <header class="page-head faq__head">
+        <p class="page-head__eyebrow eyebrow">FAQ</p>
+        <h1 class="page-head__title">Common questions.</h1>
+        <img class="ornament" src="/images/ornament.png" alt="" width="112" height="22" />
+      </header>
+
+      <div class="faq__list">
+        {
+          faqs.map((f) => (
+            <details class="faq__item" name="faq">
+              <summary>
+                <span>{f.question}</span>
+                <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
+                  <path d="M7 1v12M1 7h12" />
+                </svg>
+              </summary>
+              <div class="faq__answer">
+                <PortableText value={f.answer} />
+              </div>
+            </details>
+          ))
+        }
+      </div>
+
+      <p class="faq__more">
+        Still have a question? <a href="/contact">Get in touch</a>. We’re happy to help.
+      </p>
+    </div>
+  </section>
+</Page>
+
+<style>
+  .faq {
+    position: relative;
+    padding-bottom: 72px;
+  }
+
+  .faq__botanical {
+    position: absolute;
+    right: 0;
+    top: -40px;
+    width: 166px;
+    height: auto;
+    pointer-events: none;
+  }
+
+  .faq__head {
+    padding-top: 8px;
+  }
+
+  .faq__head .page-head__title {
+    font-size: 36px;
+  }
+
+  .faq__list {
+    width: 753px;
+    margin: 34px 0 0 92px;
+    border: 1px solid rgba(150, 125, 95, 0.32);
+    background: rgba(255, 252, 245, 0.35);
+  }
+
+  .faq__item + .faq__item {
+    border-top: 1px solid rgba(150, 125, 95, 0.32);
+  }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 48px;
+    padding: 10px 26px 10px 22px;
+    font-size: 16px;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item summary:hover {
+    color: var(--rust);
+  }
+
+  .faq__item summary svg {
+    flex: none;
+    fill: none;
+    stroke: var(--rust);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    transition: transform 0.25s ease;
+  }
+
+  .faq__item[open] summary svg {
+    transform: rotate(45deg);
+  }
+
+  .faq__answer {
+    padding: 0 60px 18px 22px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
+  .faq__more {
+    width: 753px;
+    margin: 28px 0 0 92px;
+    font-size: 14.5px;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+
+  .faq__answer :global(p + p) {
+    margin-top: 10px;
+  }
+
+  .faq__answer :global(a),
+  .faq__more a {
+    color: var(--rust);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 1023px) {
+    .faq {
+      padding: 0 16px 56px;
+    }
+
+    .faq__botanical {
+      display: none;
+    }
+
+    .faq__head {
+      padding-top: 28px;
+    }
+
+    .faq__head .page-head__title {
+      font-size: 32px;
+    }
+
+    .faq__list,
+    .faq__more {
+      width: auto;
+      max-width: 753px;
+      margin-inline: auto;
+    }
+
+    .faq__item summary {
+      padding: 12px 16px;
+    }
+
+    .faq__answer {
+      padding: 0 16px 16px;
+    }
+  }
+</style>

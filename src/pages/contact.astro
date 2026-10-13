@@ -1,0 +1,244 @@
+---
+import Page from '../layouts/Page.astro';
+import { getSiteDetails } from '../lib/content';
+
+const site = await getSiteDetails();
+const { email } = site;
+---
+
+<Page title="Contact | Jamn Good" description="Questions, special requests or wholesale enquiries — get in touch with Jamn Good.">
+  <section class="contact">
+    <div class="wrap">
+      <header class="page-head contact__head">
+        <p class="page-head__eyebrow eyebrow">Contact</p>
+        <h1 class="page-head__title">Let’s get in touch.</h1>
+        <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
+      </header>
+
+      <div class="contact__body">
+        <div class="contact__info">
+          <p class="contact__intro">
+            Have a question, special request, or interested in a wholesale opportunity? We’d love to hear from you!
+          </p>
+
+          <ul class="contact__links">
+            <li>
+              <a href={`mailto:${email}`}>
+                <span class="contact__icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5.5h14v9H3zM3.4 6l6.6 5 6.6-5" /></svg>
+                </span>
+                {email}
+              </a>
+            </li>
+            {site.facebook && (
+            <li>
+              <a href={site.facebook} target="_blank" rel="noopener">
+                <span class="contact__icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" width="20" height="20"><path class="fill" d="M11 17v-6h2.1l.4-2.5H11V7c0-.7.3-1.2 1.3-1.2h1.3V3.6a17 17 0 0 0-1.9-.1c-2 0-3.2 1.2-3.2 3.3v1.7H6.4V11h2.1v6Z" /></svg>
+                </span>
+                Jamn Good<span class="visually-hidden"> on Facebook (opens in a new tab)</span>
+              </a>
+            </li>
+            )}
+            {site.instagram && (
+            <li>
+              <a href={site.instagram} target="_blank" rel="noopener">
+                <span class="contact__icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" width="20" height="20"><rect x="4" y="4" width="12" height="12" rx="3.5" /><circle cx="10" cy="10" r="2.8" /><circle class="fill" cx="13.4" cy="6.6" r=".7" /></svg>
+                </span>
+                @jamngood
+              </a>
+            </li>
+            )}
+          </ul>
+        </div>
+
+        <form class="contact__form" data-contact-form data-email={email}>
+          <label class="visually-hidden" for="c-name">Name</label>
+          <input id="c-name" name="name" type="text" placeholder="Name" autocomplete="name" required />
+          <label class="visually-hidden" for="c-email">Email</label>
+          <input id="c-email" name="email" type="email" placeholder="Email" autocomplete="email" required />
+          <label class="visually-hidden" for="c-message">Message</label>
+          <textarea id="c-message" name="message" placeholder="Message" rows="5" required></textarea>
+          <button type="submit" class="btn btn--rust contact__send">Send Message</button>
+          <p class="contact__status" role="status" data-status></p>
+        </form>
+      </div>
+    </div>
+
+    <img class="contact__strawberry" src="/images/contact-strawberry.png" alt="" width="330" height="193" loading="lazy" />
+  </section>
+</Page>
+
+<script>
+  // Arriving from a "wholesale" or "events" button: start the message for them.
+  const starters: Record<string, string> = {
+    wholesale: "Hi! I'm interested in carrying Jamn Good at my shop. ",
+    events: "Hi! I'd love to order treats for an event.\n\nEvent date: \nNumber of guests: \nWhat I'm looking for: ",
+  };
+  const starter = starters[new URLSearchParams(location.search).get('topic') ?? ''];
+  const msg = document.querySelector<HTMLTextAreaElement>('#c-message');
+  if (starter && msg && !msg.value) msg.value = starter;
+
+  // No backend yet: hand the message to the visitor's email app, pre-filled.
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const name = String(data.get('name') || '');
+    const subject = encodeURIComponent(`Message from ${name || 'the website'}`);
+    const body = encodeURIComponent(`${data.get('message') || ''}\n\n— ${name} (${data.get('email') || ''})`);
+    window.location.href = `mailto:${form.dataset.email}?subject=${subject}&body=${body}`;
+    const status = form.querySelector('[data-status]');
+    if (status) status.textContent = 'Opening your email app… thanks for reaching out!';
+  });
+</script>
+
+<style>
+  .contact {
+    position: relative;
+    min-height: 600px;
+    padding-bottom: 150px;
+  }
+
+  .contact__head {
+    padding-top: 8px;
+  }
+
+  .contact__body {
+    display: grid;
+    grid-template-columns: 360px 453px;
+    justify-content: space-between;
+    margin: 38px 62px 0 69px;
+  }
+
+  .contact__intro {
+    font-size: 16.5px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+  }
+
+  .contact__links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .contact__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .contact__links a:hover {
+    color: var(--rust);
+  }
+
+  .contact__icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    background: var(--rust-bg);
+    color: var(--cream);
+  }
+
+  .contact__icon svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+
+  .contact__icon .fill {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  .contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contact__form input,
+  .contact__form textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid rgba(140, 115, 85, 0.45);
+    border-radius: 1px;
+    background: rgba(255, 252, 245, 0.55);
+    color: var(--ink);
+    font-size: 14px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .contact__form input {
+    height: 46px;
+  }
+
+  .contact__form textarea {
+    height: 122px;
+    resize: vertical;
+  }
+
+  .contact__form ::placeholder {
+    color: #8a7b68;
+  }
+
+  .contact__form input:focus,
+  .contact__form textarea:focus {
+    outline: none;
+    border-color: var(--rust);
+    background: rgba(255, 252, 245, 0.85);
+  }
+
+  .contact__send {
+    height: 50px;
+    margin-top: 2px;
+    font-size: 12.5px;
+    letter-spacing: 2.4px;
+  }
+
+  .contact__status {
+    min-height: 1em;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .contact__strawberry {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 320px;
+    height: auto;
+    pointer-events: none;
+  }
+
+  @media (max-width: 1023px) {
+    .contact {
+      min-height: 0;
+      padding: 0 16px 140px;
+    }
+
+    .contact__head {
+      padding-top: 28px;
+    }
+
+    .contact__body {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      max-width: 560px;
+      margin: 32px auto 0;
+    }
+
+    .contact__strawberry {
+      width: 220px;
+    }
+  }
+</style>

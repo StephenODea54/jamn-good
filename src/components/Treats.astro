@@ -1,0 +1,217 @@
+---
+import { getTreats } from '../lib/content';
+
+const treats = await getTreats();
+
+const arrow = `<svg viewBox="0 0 16 10" width="14" height="9" aria-hidden="true"><path d="M1 5h13M10 1l4 4-4 4" /></svg>`;
+---
+
+<section class="treats" aria-labelledby="treats-title">
+  <img class="treats__botanical" src="/images/market/botanical-band.png" alt="" width="100" height="206" loading="lazy" />
+  <img class="treats__vine" src="/images/market/botanical-vine.png" alt="" width="166" height="208" loading="lazy" />
+
+  <div class="wrap treats__inner">
+    <div class="treats__copy">
+      <p class="treats__eyebrow eyebrow">Cookies &amp; Treats</p>
+      <h2 id="treats-title" class="treats__title">Sweets for your special day.</h2>
+      <img class="treats__ornament" src="/images/ornament.png" alt="" width="96" height="19" />
+      <p class="treats__text">
+        We bake custom cookies for weddings, parties, and all kinds of special events. Tell us about your celebration and
+        we’ll help make it a little sweeter.
+      </p>
+      <a href="/contact?topic=events" class="btn btn--rust treats__cta">Ask About Event Orders <Fragment set:html={arrow} /></a>
+    </div>
+
+    <div class="treats__card">
+      <p class="treats__card-title eyebrow">Also from our kitchen</p>
+      <ul class="treats__list">
+        {
+          treats.map((t) => (
+            <li>
+              <svg viewBox="0 0 16 14" width="13" height="11" aria-hidden="true">
+                <path d="M8 13.2S1 8.9 1 4.6A3.4 3.4 0 0 1 8 3a3.4 3.4 0 0 1 7 1.6c0 4.3-7 8.6-7 8.6Z" />
+              </svg>
+              {t}
+            </li>
+          ))
+        }
+        <li class="treats__more">and more seasonal favorites</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* same torn pink paper as the events band on Where to Find Us */
+  .treats {
+    position: relative;
+    margin-top: 24px;
+    background: #ecd3be url('/images/market/pink-tile.jpg') repeat;
+  }
+
+  .treats::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -24px;
+    height: 46px;
+    background: url('/images/market/edge-pink.png') left top / auto 46px repeat-x;
+    pointer-events: none;
+  }
+
+  .treats__botanical {
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 100px;
+    height: auto;
+    pointer-events: none;
+  }
+
+  .treats__vine {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 150px;
+    height: auto;
+    pointer-events: none;
+  }
+
+  .treats__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 44px 150px 48px 120px;
+  }
+
+  .treats__copy {
+    width: 380px;
+  }
+
+  .treats__eyebrow {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 1.2px;
+    color: #9f3e1c;
+  }
+
+  .treats__title {
+    margin-top: 8px;
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 36px;
+    color: var(--ink);
+  }
+
+  .treats__ornament {
+    width: 96px;
+    height: auto;
+    margin: 10px 0 0 -2px;
+  }
+
+  .treats__text {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--ink-soft);
+  }
+
+  .treats__cta {
+    height: 34px;
+    margin-top: 18px;
+    padding: 0 18px;
+    font-size: 11px;
+    letter-spacing: 1.6px;
+  }
+
+  .treats__cta :global(svg) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .treats__card {
+    width: 300px;
+    padding: 22px 26px 20px;
+    border-radius: 3px;
+    background: rgba(255, 251, 245, 0.72);
+    box-shadow: 0 1px 3px rgba(110, 70, 40, 0.1);
+  }
+
+  .treats__card-title {
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(160, 120, 90, 0.25);
+    font-size: 10.5px;
+    letter-spacing: 1.4px;
+    text-align: center;
+    color: #4d4529;
+  }
+
+  .treats__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .treats__list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-subhead);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .treats__list svg {
+    flex: none;
+    fill: var(--rust-bg);
+  }
+
+  .treats__list .treats__more {
+    padding-left: 25px;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+
+  @media (max-width: 1023px) {
+    .treats__botanical,
+    .treats__vine {
+      display: none;
+    }
+
+    .treats__inner {
+      flex-direction: column;
+      gap: 28px;
+      padding: 40px 16px 44px;
+      text-align: center;
+    }
+
+    .treats__copy {
+      width: auto;
+      max-width: 460px;
+    }
+
+    .treats__ornament {
+      margin: 10px auto 0;
+    }
+
+    .treats__card {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .treats__list {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+</style>

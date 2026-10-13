@@ -1,0 +1,114 @@
+---
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'Shop', href: '/shop' },
+  { label: 'Where to Find Us', href: '/where-to-find-us' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Contact', href: '/contact' },
+];
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <nav class="footer__nav" aria-label="Footer">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <a href="/" class="footer__logo" aria-label="Jamn Good home">
+      <img src="/images/logo.png" alt="Jamn Good jam + cookies" width="700" height="574" loading="lazy" />
+    </a>
+
+    <p class="footer__copy">© <span data-year>{year}</span> Jamn Good | All Rights Reserved</p>
+  </div>
+</footer>
+
+<script>
+  // the site is static, so update the year in case the build is older than this year
+  document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = String(new Date().getFullYear())));
+</script>
+
+<style>
+  .footer {
+    position: relative;
+    height: 63px;
+    background: var(--paper-footer) url('/images/bg-footer.jpg') center top / auto 63px no-repeat;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    --text-top: 24px;
+  }
+
+  .footer__nav {
+    position: absolute;
+    left: 75px;
+    top: var(--text-top);
+    display: flex;
+    gap: 23px;
+    color: #645644;
+  }
+
+  .footer__nav a:hover {
+    color: var(--rust);
+  }
+
+  .footer__logo {
+    position: absolute;
+    left: 461px;
+    top: 1px;
+    width: 74px;
+  }
+
+  .footer__logo img {
+    width: 100%;
+    height: auto;
+  }
+
+  .footer__copy {
+    position: absolute;
+    right: 58px;
+    top: var(--text-top);
+    color: #60513e;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1023px) {
+    .footer {
+      height: auto;
+      background-size: cover;
+    }
+
+    .footer .wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 24px 16px;
+    }
+
+    .footer__nav,
+    .footer__logo,
+    .footer__copy {
+      position: static;
+    }
+
+    .footer__nav {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px 20px;
+    }
+
+    .footer__logo {
+      order: -1;
+      width: 90px;
+    }
+
+    .footer__copy {
+      white-space: normal;
+      text-align: center;
+    }
+  }
+</style>

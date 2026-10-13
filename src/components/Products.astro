@@ -1,0 +1,271 @@
+---
+import { formatPrice, productUrl } from '../data/products';
+import { getFeaturedProducts } from '../lib/content';
+
+// Products with a "Homepage position" in EmDash, using their wide homepage photo when there is one.
+const featured = (await getFeaturedProducts()).map((product) => {
+  const photo = product.home ?? product.image;
+  return { product, img: photo?.src, w: photo?.width ?? 213, h: photo?.height ?? 176 };
+});
+
+// The row shows four jars; arrows only appear once there is something to scroll to.
+const VISIBLE = 4;
+const canScroll = featured.length > VISIBLE;
+// The mockup's column widths fit exactly four; any other count gets even, centred columns.
+const gridStyle =
+  featured.length === VISIBLE
+    ? undefined
+    : `grid-template-columns: repeat(${featured.length}, 213px); left: calc((1024px - ${featured.length} * 213px - ${featured.length - 1} * 9.33px) / 2);`;
+---
+
+<section class="products" id="shop">
+  <div class="wrap">
+    <header class="products__head">
+      <p class="products__eyebrow eyebrow">Shop Our Collection</p>
+      <h2 class="products__title">Homemade goodness in every jar.</h2>
+      <img class="ornament products__ornament" src="/images/ornament.png" alt="" width="84" height="17" />
+    </header>
+
+    <div class="carousel">
+      {
+        canScroll && (
+          <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Previous products">
+            <svg viewBox="0 0 14 26" width="14" height="26" aria-hidden="true">
+              <path d="M12.5 1.5 2 13l10.5 11.5" />
+            </svg>
+          </button>
+        )
+      }
+
+      <ul class="products__grid" style={gridStyle}>
+        {
+          featured.map(({ product: p, img, w, h }) => (
+            <li class="product">
+              <a href={productUrl(p)} class="product__media" tabindex="-1" aria-hidden="true">
+                {img && <img src={img} alt="" width={w} height={h} loading="lazy" />}
+              </a>
+              <h3 class="product__name">
+                <a href={productUrl(p)}>{p.name}</a>
+              </h3>
+              <p class="product__price">{formatPrice(p.price)}</p>
+              <button class="product__add" type="button" data-add-to-cart={p.slug}>
+                Add to Cart
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+
+      {
+        canScroll && (
+          <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Next products">
+            <svg viewBox="0 0 14 26" width="14" height="26" aria-hidden="true">
+              <path d="M1.5 1.5 12 13 1.5 24.5" />
+            </svg>
+          </button>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .products {
+    position: relative;
+    height: 388px;
+    background: var(--paper) url('/images/bg-products.jpg') center top / auto 388px no-repeat;
+  }
+
+  .products__head {
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .products__eyebrow {
+    margin-left: -1px;
+    transform: translateY(1px);
+    font-size: 12.6px;
+    line-height: 22px;
+    letter-spacing: 0.3px;
+    color: #9f3e1c;
+  }
+
+  .products__title {
+    margin-top: -3px;
+    font-family: var(--font-display);
+    font-size: 27.6px;
+    font-weight: 600;
+    line-height: 38px;
+    color: #352a1d;
+  }
+
+  .products__ornament {
+    margin: 7px auto 0;
+    transform: translateX(-2px);
+  }
+
+  .carousel {
+    position: relative;
+    margin-top: 12px;
+  }
+
+  .carousel__arrow {
+    position: absolute;
+    top: 76px;
+    padding: 4px;
+    background: none;
+    border: 0;
+    color: #a14826;
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  .carousel__arrow svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .carousel__arrow--prev {
+    left: 25px;
+  }
+
+  .carousel__arrow--next {
+    left: 964px;
+  }
+
+  .products__grid {
+    position: absolute;
+    left: 65px;
+    top: 0;
+    display: grid;
+    grid-template-columns: 212px 215px 215px 211px;
+    column-gap: 9.33px;
+  }
+
+  .product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product__media {
+    height: 172px;
+    display: flex;
+    align-items: center;
+  }
+
+  .product__media img {
+    flex: none;
+  }
+
+  .product__name a:hover {
+    color: var(--rust);
+  }
+
+  .product > :not(.product__media) {
+    transform: translateX(-1px);
+  }
+
+  .product__name {
+    margin-top: 6px;
+    font-family: var(--font-subhead);
+    font-size: 12.3px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #24190e;
+  }
+
+  .product__price {
+    position: relative;
+    margin-top: 3px;
+    padding-bottom: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #923b1f;
+  }
+
+  .product__price::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 35px;
+    height: 2px;
+    transform: translateX(-50%);
+    background: rgba(161, 85, 50, 0.75);
+  }
+
+  .product__add {
+    margin-top: 10px;
+    width: 103px;
+    height: 23px;
+    padding: 0 0 3px;
+    border: 0;
+    border-radius: 1px;
+    background: var(--olive);
+    color: #efeddc;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .product__add:hover {
+    background: #4f4c28;
+  }
+
+  @media (max-width: 1023px) {
+    .products {
+      height: auto;
+      padding: 0 16px 40px;
+      background-size: cover;
+    }
+
+    .products__title {
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .carousel {
+      margin-top: 24px;
+    }
+
+    .carousel__arrow {
+      display: none;
+    }
+
+    .products__grid {
+      position: static;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 16px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .product__media {
+      height: auto;
+      width: 100%;
+    }
+
+    .product__media img {
+      flex: 1 1 auto;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 212 / 176;
+      object-fit: cover;
+    }
+
+    .product > :not(.product__media) {
+      transform: none;
+    }
+  }
+</style>

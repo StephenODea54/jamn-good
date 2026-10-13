@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jamn-good",
+  "main": "./src/worker.ts",
+  "compatibility_date": "2026-02-24",
+  "compatibility_flags": ["nodejs_compat"],
+  // Content database (D1) and uploaded photos (R2). Wrangler creates both on first deploy.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jamn-good"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "jamn-good-media"
+    }
+  ],
+  // Runs EmDash maintenance and scheduled publishing.
+  "triggers": {
+    "crons": ["* * * * *"]
+  }
+}
