@@ -4,18 +4,14 @@ import Text from '../components/fundations/elements/Text.astro';
 import Button from '../components/fundations/elements/Button.astro';
 import Wrapper from '../components/fundations/containers/Wrapper.astro';
 import Grid from '../components/fundations/containers/Grid.astro';
+import EmojiPill from '../components/EmojiPill.astro';
 import { storeMapsUrl, eventParts, mapsUrl, upcoming } from '../data/markets';
-import { getEvents, getProducts, getStores } from '../lib/content';
+import { getEvents, getStores } from '../lib/content';
 
 // Stores and events are edited in EmDash.
-const [stores, events, products] = await Promise.all([getStores(), getEvents(), getProducts()]);
-// Two jars for the pills in the headline.
-const [jarA, jarB] = products.map((p) => (p.home ?? p.image)?.src).filter(Boolean) as string[];
+const [stores, events] = await Promise.all([getStores(), getEvents()]);
 const VISIBLE_EVENTS = 4;
 const list = upcoming(events);
-
-const pill =
-  'inline-block object-cover h-10 w-16 align-middle rounded-full sm:h-12 sm:w-20 lg:h-16 lg:w-28 duration-300 ease-out hover:-rotate-6 hover:scale-110';
 ---
 
 <Page title="Where to Find Us | Jamn Good" description="Find Jamn Good jam at local stores, flea markets and craft shows.">
@@ -24,11 +20,11 @@ const pill =
       <h1 class="max-w-5xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl text-foreground font-medium text-balance">
         Find us at local{' '}
         <span class="whitespace-nowrap">
-          {jarA && <img src={jarA} alt="" width="300" height="250" class={pill} />} markets
+          <EmojiPill emoji="🍓" size="page" /> markets
         </span>{' '}
         and on the{' '}
         <span class="whitespace-nowrap">
-          {jarB && <img src={jarB} alt="" width="300" height="250" class={pill} />} shelf.
+          <EmojiPill emoji="🫐" size="page" /> shelf.
         </span>
       </h1>
       <Text tag="p" variant="textLG" class="max-w-xl text-muted-foreground text-pretty">

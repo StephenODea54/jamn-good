@@ -3,18 +3,13 @@ import Text from './fundations/elements/Text.astro';
 import Button from './fundations/elements/Button.astro';
 import TextLink from './fundations/elements/TextLink.astro';
 import Wrapper from './fundations/containers/Wrapper.astro';
-import { getFeaturedProducts } from '../lib/content';
+import EmojiPill from './EmojiPill.astro';
 
-// The pills between the words are the homepage jars' photos, in their homepage order.
-const photos = (await getFeaturedProducts()).map((p) => (p.home ?? p.image)?.src).filter(Boolean) as string[];
 const lines = [
-  { text: 'Spread a little', after: '', rest: '' },
-  { text: 'happiness,', after: '', rest: '' },
-  { text: 'one small batch', after: ' jar', rest: 'at a time.' },
-].map((line, i) => ({ ...line, image: photos[i] }));
-
-const pill =
-  'inline-block object-cover h-10 w-16 align-middle rounded-full sm:h-14 sm:w-24 lg:h-20 lg:w-36 duration-300 ease-out hover:-rotate-6 hover:scale-110 pill-pop';
+  { text: 'Spread a little', emoji: '🍓', after: '', rest: '' },
+  { text: 'happiness,', emoji: '🫐', after: '', rest: '' },
+  { text: 'one small batch', emoji: '🍑', after: ' jar', rest: 'at a time.' },
+];
 ---
 
 <section>
@@ -29,21 +24,10 @@ const pill =
         lines.map((line, i) => (
           <span>
             {line.text}{' '}
-            {line.image && (
-              <span class="whitespace-nowrap">
-                <img
-                  src={line.image}
-                  alt=""
-                  width="300"
-                  height="250"
-                  loading="eager"
-                  class={pill}
-                  style={`animation-delay: ${0.2 + i * 0.12}s`}
-                />
-                {line.after}
-              </span>
-            )}
-            {!line.image && line.after}{' '}
+            <span class="whitespace-nowrap">
+              <EmojiPill emoji={line.emoji} popDelay={0.2 + i * 0.12} />
+              {line.after}
+            </span>{' '}
             {line.rest}
           </span>
         ))

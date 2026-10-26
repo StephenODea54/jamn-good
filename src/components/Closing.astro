@@ -1,12 +1,7 @@
 ---
 import TextLink from './fundations/elements/TextLink.astro';
 import Wrapper from './fundations/containers/Wrapper.astro';
-import { getProducts } from '../lib/content';
-
-// The pill is a jar that isn't already in the homepage row.
-const products = await getProducts();
-const jar = products.find((p) => p.kind === 'jam' && p.homePosition === undefined) ?? products[0];
-const image = (jar?.home ?? jar?.image)?.src;
+import EmojiPill from './EmojiPill.astro';
 ---
 
 <section>
@@ -15,18 +10,7 @@ const image = (jar?.home ?? jar?.image)?.src;
       class="max-w-5xl text-5xl tracking-tighter text-center sm:text-6xl lg:text-8xl text-foreground font-medium text-balance"
     >
       Life’s too short for{' '}
-      {
-        image && (
-          <img
-            src={image}
-            alt=""
-            width="300"
-            height="250"
-            loading="lazy"
-            class="inline-block object-cover h-10 w-16 align-middle rounded-full sm:h-14 sm:w-24 lg:h-20 lg:w-36 duration-300 ease-out hover:-rotate-6 hover:scale-110"
-          />
-        )
-      }{' '}
+      <EmojiPill emoji="🍋" />{' '}
       boring toast.
     </h2>
     <TextLink href="/shop">Find your flavor</TextLink>

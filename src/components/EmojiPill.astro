@@ -1,0 +1,24 @@
+---
+// A fruit emoji in a round cream pill, set between the words of a big headline.
+interface Props {
+  emoji: string;
+  /** "home" is the size for the 8xl homepage headlines, "page" for the 7xl page heroes */
+  size?: 'home' | 'page';
+  /** Pop in on load, after this many seconds */
+  popDelay?: number;
+}
+
+const { emoji, size = 'home', popDelay } = Astro.props;
+---
+
+<span
+  aria-hidden="true"
+  class:list={[
+    'inline-flex items-center justify-center align-middle rounded-full bg-muted leading-none select-none duration-300 ease-out hover:-rotate-6 hover:scale-110',
+    size === 'home'
+      ? 'h-10 w-16 text-3xl sm:h-14 sm:w-24 sm:text-5xl lg:h-20 lg:w-36 lg:text-6xl'
+      : 'h-10 w-16 text-3xl sm:h-12 sm:w-20 sm:text-4xl lg:h-16 lg:w-28 lg:text-5xl',
+    { 'pill-pop': popDelay !== undefined },
+  ]}
+  style={popDelay !== undefined ? `animation-delay: ${popDelay}s` : undefined}>{emoji}</span
+>
