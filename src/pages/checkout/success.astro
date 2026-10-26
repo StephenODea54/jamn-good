@@ -1,5 +1,9 @@
 ---
 import Page from '../../layouts/Page.astro';
+import Text from '../../components/fundations/elements/Text.astro';
+import Button from '../../components/fundations/elements/Button.astro';
+import Wrapper from '../../components/fundations/containers/Wrapper.astro';
+import Grid from '../../components/fundations/containers/Grid.astro';
 import { formatPrice } from '../../data/products';
 import { getSiteDetails } from '../../lib/content';
 import { orderRef as toOrderRef, recordOrder } from '../../lib/orders';
@@ -34,44 +38,55 @@ const orderRef = toOrderRef(sessionId);
 ---
 
 <Page title="Thank you! | Jamn Good" description="Your Jamn Good order is confirmed." noindex>
-  <section class="wrap thanks">
-    <header class="page-head">
-      <p class="page-head__eyebrow eyebrow">Order confirmed</p>
-      <h1 class="page-head__title">Thank you{firstName ? `, ${firstName}` : ''}!</h1>
-      <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
-      <p class="page-head__lede">
+  <section>
+    <Wrapper variant="standard" class="flex flex-col gap-8 pt-48 pb-16">
+      <Text tag="p" variant="textSM" class="text-muted-foreground">Order confirmed</Text>
+      <h1 class="max-w-5xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl text-foreground font-medium text-balance">
+        Thank you{firstName ? `, ${firstName}` : ''}!
+      </h1>
+      <Text tag="p" variant="textLG" class="max-w-xl text-muted-foreground text-pretty">
         {site.pickupInstructions ?? 'We’ll be in touch soon to set up a pickup time.'}
-      </p>
-    </header>
+      </Text>
+    </Wrapper>
+  </section>
 
-    <div class="receipt">
-      <p class="receipt__ref">Order <strong>#{orderRef}</strong></p>
-      <ul class="receipt__lines">
-        {
-          items.map((li) => (
-            <li>
-              <span>
-                {li.description} <span class="receipt__qty">× {li.quantity}</span>
-              </span>
-              <span>{cents(li.amount_subtotal)}</span>
-            </li>
-          ))
-        }
-      </ul>
-      <dl class="receipt__totals">
-        <div class="receipt__total"><dt>Total paid</dt><dd>{cents(session.amount_total)}</dd></div>
-      </dl>
-      {
-        session.customer_details?.email && (
-          <p class="receipt__note">A receipt is on its way to {session.customer_details.email}.</p>
-        )
-      }
-      <p class="receipt__note">
-        Questions about your order? Email <a href={`mailto:${site.email}`}>{site.email}</a> and mention order #{orderRef}.
-      </p>
-    </div>
-
-    <p class="thanks__back"><a href="/shop" class="btn btn--olive">Keep Shopping</a></p>
+  <section>
+    <Wrapper variant="standard" class="pb-24">
+      <Grid class="gap-y-8">
+        <div class="flex flex-col col-span-12 gap-6 p-8 rounded-xl bg-muted lg:col-span-7">
+          <p class="text-sm text-muted-foreground">Order <span class="font-medium text-foreground">#{orderRef}</span></p>
+          <ul class="flex flex-col gap-3">
+            {
+              items.map((li) => (
+                <li class="flex justify-between gap-6">
+                  <span>
+                    {li.description} <span class="text-muted-foreground">× {li.quantity}</span>
+                  </span>
+                  <span class="tabular-nums">{cents(li.amount_subtotal)}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <dl class="flex justify-between gap-6 pt-6 text-lg font-medium tracking-tight">
+            <dt>Total paid</dt>
+            <dd class="tabular-nums">{cents(session.amount_total)}</dd>
+          </dl>
+        </div>
+        <div class="flex flex-col justify-between col-span-12 gap-8 lg:col-span-5">
+          <div class="flex flex-col gap-3 text-sm text-muted-foreground">
+            {session.customer_details?.email && <p>A receipt is on its way to {session.customer_details.email}.</p>}
+            <p>
+              Questions about your order? Email{' '}
+              <a href={`mailto:${site.email}`} class="font-medium duration-200 text-foreground hover:text-muted-foreground">
+                {site.email}
+              </a>{' '}
+              and mention order #{orderRef}.
+            </p>
+          </div>
+          <Button isLink href="/shop" variant="primary" size="md" class="w-fit">Keep shopping</Button>
+        </div>
+      </Grid>
+    </Wrapper>
   </section>
 </Page>
 
@@ -80,104 +95,3 @@ const orderRef = toOrderRef(sessionId);
   clearCart();
   document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((el) => (el.hidden = true));
 </script>
-
-<style>
-  .thanks {
-    padding: 22px 16px 80px;
-  }
-
-  .thanks .page-head__lede {
-    max-width: 520px;
-    margin-inline: auto;
-  }
-
-  .receipt {
-    max-width: 480px;
-    margin: 36px auto 0;
-    padding: 26px 30px;
-    border: 1px solid rgba(150, 125, 95, 0.32);
-    border-radius: 3px;
-    background: rgba(255, 252, 245, 0.55);
-  }
-
-  .receipt__ref {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 1px;
-    color: var(--ink-muted);
-  }
-
-  .receipt__lines {
-    margin-top: 16px;
-    border-top: 1px solid rgba(150, 125, 95, 0.25);
-  }
-
-  .receipt__lines li,
-  .receipt__totals div {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 10px 0;
-  }
-
-  .receipt__lines li {
-    border-bottom: 1px solid rgba(150, 125, 95, 0.18);
-    font-family: var(--font-subhead);
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--ink);
-  }
-
-  .receipt__lines li > span:last-child,
-  .receipt__totals dd {
-    font-family: var(--font-mono);
-    font-weight: 500;
-    color: #923b1f;
-  }
-
-  .receipt__qty {
-    font-family: var(--font-body);
-    font-weight: 400;
-    color: var(--ink-muted);
-  }
-
-  .receipt__totals {
-    margin: 10px 0 0;
-    font-size: 14px;
-    color: var(--ink-soft);
-  }
-
-  .receipt__totals dd {
-    margin: 0;
-  }
-
-  .receipt__totals div {
-    padding: 4px 0;
-  }
-
-  .receipt__total {
-    margin-top: 6px;
-    padding-top: 10px !important;
-    border-top: 1px solid rgba(150, 125, 95, 0.25);
-    font-weight: 600;
-    color: var(--ink);
-  }
-
-  .receipt__note {
-    margin-top: 14px;
-    font-size: 13.5px;
-    line-height: 1.6;
-    color: var(--ink-muted);
-  }
-
-  .receipt__note a {
-    color: var(--rust);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .thanks__back {
-    margin-top: 32px;
-    text-align: center;
-  }
-</style>

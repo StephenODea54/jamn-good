@@ -14,13 +14,16 @@ Sign in at **`/_emdash/admin`**. Changes go live as soon as you **publish** them
 | **Stores** | Shops that carry Jamn Good. |
 | **FAQs** | Questions and answers on the FAQ page (answers support links). |
 | **Treats** | Baked goods listed in the homepage Cookies & Treats section. |
-| **Site Details** | Contact email and social links. Instagram/Facebook icons only appear when their URL is filled in. |
+| **Site Details** | Contact email and social links. The Instagram/Facebook links only appear when their URL is filled in. |
 | **Newsletter Subscribers** | Everyone who joined through the "Stay in the Loop" form, with when and where they signed up. Private; never shown on the site. Export them to an email service when you start sending newsletters. |
 
 Ratings, review counts, ingredients and storage are optional. If they're blank, that part of the
 product page is hidden.
 
-The page design (layout, headings, homepage copy) lives in the code under `src/`.
+The page design (layout, headings, homepage copy) lives in the code under `src/`. It follows the
+Outkast theme's design system: Tailwind CSS with the colour and font tokens in
+`src/styles/global.css`, and the shared building blocks (`Wrapper`, `Grid`, `Text`, `Button`,
+`TextLink`) in `src/components/fundations/`.
 
 ## Online orders (Stripe)
 

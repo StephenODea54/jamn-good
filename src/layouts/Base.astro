@@ -5,7 +5,7 @@ import CartDrawer from '../components/CartDrawer.astro';
 interface Props {
   title?: string;
   description?: string;
-  /** Link-preview image (path or URL); defaults to the logo on white */
+  /** Link-preview image (path or URL); defaults to the logo on cream */
   image?: string;
   /** schema.org structured data for search engines */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
@@ -30,12 +30,12 @@ const structuredData = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={pageUrl} />
     {noindex && <meta name="robots" content="noindex" />}
@@ -52,13 +52,13 @@ const structuredData = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c')
     <meta name="twitter:image" content={imageUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Libre+Baskerville:wght@400;700&family=Lora:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Geist: https://fonts.google.com/specimen/Geist -->
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
     <title>{title}</title>
   </head>
-  <body>
+  <body
+    class="relative flex flex-col font-sans antialiased bg-background text-foreground min-h-svh selection:bg-foreground selection:text-background"
+  >
     <slot />
     <CartDrawer />
   </body>

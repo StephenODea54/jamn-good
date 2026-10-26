@@ -1,134 +1,93 @@
 ---
-const links = [
-  { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/shop' },
-  { label: 'Where to Find Us', href: '/where-to-find-us' },
-  { label: 'FAQ', href: '/faq' },
-  // On desktop the mockup's left group has no room for a sixth link, so Newsletter sits by the copyright there.
-  { label: 'Newsletter', href: '/newsletter', mobileOnly: true },
-  { label: 'Contact', href: '/contact' },
-];
+import Text from './fundations/elements/Text.astro';
+import Wrapper from './fundations/containers/Wrapper.astro';
+import Grid from './fundations/containers/Grid.astro';
+import { getSiteDetails } from '../lib/content';
+
+const site = await getSiteDetails();
+
+const columns = [
+  {
+    title: 'Shop',
+    links: [
+      { label: 'All jams', href: '/shop' },
+      { label: 'Where to find us', href: '/where-to-find-us' },
+      { label: 'Event orders', href: '/contact?topic=events' },
+      { label: 'Wholesale', href: '/contact?topic=wholesale' },
+    ],
+  },
+  {
+    title: 'Help',
+    links: [
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Newsletter', href: '/newsletter' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    title: 'Follow',
+    links: [
+      site.instagram && { label: 'Instagram', href: site.instagram },
+      site.facebook && { label: 'Facebook', href: site.facebook },
+    ].filter((l): l is { label: string; href: string } => Boolean(l)),
+  },
+].filter((c) => c.links.length > 0);
+
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
-  <div class="wrap">
-    <nav class="footer__nav" aria-label="Footer">
-      {links.map((l) => <a href={l.href} class:list={{ 'footer__mobile-only': l.mobileOnly }}>{l.label}</a>)}
-    </nav>
-
-    <a href="/" class="footer__logo" aria-label="Jamn Good home">
-      <img src="/images/logo.png" alt="Jamn Good jam + cookies" width="700" height="574" loading="lazy" />
-    </a>
-
-    <p class="footer__copy"><a class="footer__copy-link" href="/newsletter">Newsletter</a>© <span data-year>{year}</span> Jamn Good | All Rights Reserved</p>
-  </div>
+<footer>
+  <Wrapper variant="standard" class="py-24">
+    <div class="flex flex-col gap-24">
+      <Grid class="gap-y-12">
+        <div class="flex flex-col col-span-12 gap-6 lg:col-span-6">
+          <a href="/" aria-label="Jamn Good home" class="w-fit">
+            <img src="/images/logo.webp" alt="Jamn Good" width="640" height="469" loading="lazy" class="w-auto h-28" />
+          </a>
+          <Text tag="p" variant="displayMD" class="max-w-md tracking-tight text-foreground font-medium text-balance">
+            Small batch jam, made by hand in Youngstown.
+          </Text>
+          <a
+            href={`mailto:${site.email}`}
+            class="text-base font-medium duration-200 w-fit text-muted-foreground hover:text-foreground"
+          >
+            {site.email}
+          </a>
+        </div>
+        <div class="grid grid-cols-2 col-span-12 gap-8 sm:grid-cols-3 lg:col-span-6 lg:pt-34">
+          {
+            columns.map((column) => (
+              <div class="flex flex-col gap-4">
+                <Text tag="p" variant="textSM" class="text-muted-foreground">
+                  {column.title}
+                </Text>
+                <ul class="flex flex-col gap-2 text-sm font-medium">
+                  {column.links.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        class="duration-200 text-foreground hover:text-muted-foreground"
+                        {...(link.href.startsWith('http') && { target: '_blank', rel: 'noopener' })}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </Grid>
+      <div class="flex flex-col justify-between gap-2 text-sm sm:flex-row text-muted-foreground">
+        <span>&copy; <span data-year>{year}</span> Jamn Good LLC</span>
+        <span>Local pickup in Youngstown, Ohio</span>
+      </div>
+    </div>
+  </Wrapper>
 </footer>
 
 <script>
-  // the site is static, so update the year in case the build is older than this year
+  // Pages can be cached, so keep the year current.
   document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = String(new Date().getFullYear())));
 </script>
-
-<style>
-  .footer {
-    position: relative;
-    height: 63px;
-    background: var(--paper-footer) url('/images/bg-footer.jpg') center top / auto 63px no-repeat;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 16px;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    --text-top: 24px;
-  }
-
-  .footer__nav {
-    position: absolute;
-    left: 75px;
-    top: var(--text-top);
-    display: flex;
-    gap: 23px;
-    color: #645644;
-  }
-
-  .footer__nav a:hover,
-  .footer__copy-link:hover {
-    color: var(--rust);
-  }
-
-  .footer__mobile-only {
-    display: none;
-  }
-
-  .footer__copy-link {
-    margin-right: 23px;
-    color: #645644;
-  }
-
-  .footer__logo {
-    position: absolute;
-    left: 461px;
-    top: 1px;
-    width: 74px;
-  }
-
-  .footer__logo img {
-    width: 100%;
-    height: auto;
-  }
-
-  .footer__copy {
-    position: absolute;
-    right: 58px;
-    top: var(--text-top);
-    color: #60513e;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 1023px) {
-    .footer {
-      height: auto;
-      background-size: cover;
-    }
-
-    .footer .wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      padding: 24px 16px;
-    }
-
-    .footer__nav,
-    .footer__logo,
-    .footer__copy {
-      position: static;
-    }
-
-    .footer__nav {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px 20px;
-    }
-
-    .footer__logo {
-      order: -1;
-      width: 90px;
-    }
-
-    .footer__copy {
-      white-space: normal;
-      text-align: center;
-    }
-
-    .footer__mobile-only {
-      display: inline;
-    }
-
-    .footer__copy-link {
-      display: none;
-    }
-  }
-</style>

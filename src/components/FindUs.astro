@@ -1,0 +1,75 @@
+---
+import Text from './fundations/elements/Text.astro';
+import TextLink from './fundations/elements/TextLink.astro';
+import Wrapper from './fundations/containers/Wrapper.astro';
+import Grid from './fundations/containers/Grid.astro';
+import { eventParts, upcoming } from '../data/markets';
+import { getEvents, getStores } from '../lib/content';
+
+// The next couple of events and the stores, from EmDash. The full list is on /where-to-find-us.
+const [stores, events] = await Promise.all([getStores(), getEvents()]);
+const next = upcoming(events).slice(0, 2);
+---
+
+<section aria-labelledby="find-us-title">
+  <Wrapper variant="standard" class="py-24">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <div class="flex flex-col max-w-xl gap-4">
+        <Text id="find-us-title" tag="h2" variant="displaySM" class="tracking-tight text-foreground font-medium">
+          Come say hi
+        </Text>
+        <Text tag="p" variant="textBase" class="text-muted-foreground text-pretty">
+          Find our jams on the shelf at local stores, or come meet us at markets and craft shows.
+        </Text>
+      </div>
+      <TextLink href="/where-to-find-us" class="shrink-0">All stores and events</TextLink>
+    </div>
+    <Grid tag="ul" class="mt-12 gap-y-6">
+      {
+        next.map((e) => {
+          const { month, day } = eventParts(e);
+          return (
+            <li class="flex flex-col col-span-12 gap-8 p-8 rounded-xl bg-muted sm:col-span-6 lg:col-span-4" data-date={e.date}>
+              <Text tag="p" variant="textSM" class="text-muted-foreground">
+                Market
+              </Text>
+              <div class="flex flex-col gap-1">
+                <Text tag="h3" variant="textLG" class="tracking-tight text-foreground font-medium">
+                  {e.name}
+                </Text>
+                <Text tag="p" variant="textSM" class="text-muted-foreground">
+                  {`${month} ${day}, ${e.town}`}
+                </Text>
+              </div>
+            </li>
+          );
+        })
+      }
+      {
+        stores.map((s) => (
+          <li class="flex flex-col col-span-12 gap-8 p-8 rounded-xl bg-muted sm:col-span-6 lg:col-span-4">
+            <Text tag="p" variant="textSM" class="text-muted-foreground">
+              In stores
+            </Text>
+            <div class="flex flex-col gap-1">
+              <Text tag="h3" variant="textLG" class="tracking-tight text-foreground font-medium">
+                {s.branch ? `${s.name} ${s.branch}` : s.name}
+              </Text>
+              <Text tag="p" variant="textSM" class="text-muted-foreground">
+                {s.street}, {s.city}
+              </Text>
+            </div>
+          </li>
+        ))
+      }
+    </Grid>
+  </Wrapper>
+</section>
+
+<script>
+  // Pages can be cached: drop events that have passed since they were rendered.
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
+  document.querySelectorAll<HTMLElement>('li[data-date]').forEach((li) => {
+    if ((li.dataset.date ?? '') < today) li.remove();
+  });
+</script>

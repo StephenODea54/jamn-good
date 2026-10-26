@@ -1,239 +1,105 @@
 ---
-interface Props {
-  /** On the homepage the header floats over the hero artwork. */
-  overlay?: boolean;
-}
+import Wrapper from './fundations/containers/Wrapper.astro';
 
-const { overlay = false } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
-
-const left = [
-  { label: 'Home', href: '/' },
+const links = [
   { label: 'Shop', href: '/shop' },
-  { label: 'Where to Find Us', href: '/where-to-find-us' },
-];
-const right = [
+  { label: 'Where to find us', href: '/where-to-find-us' },
   { label: 'FAQ', href: '/faq' },
+  { label: 'Newsletter', href: '/newsletter' },
   { label: 'Contact', href: '/contact' },
 ];
-const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+const logo = { src: '/images/logo.webp', alt: 'Jamn Good', width: 640, height: 469 };
 ---
 
-<header class:list={['header', { 'header--overlay': overlay }]}>
-  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
-    <span class="visually-hidden">Menu</span>
-    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
-  </button>
-
-  <nav class="nav nav--left" aria-label="Primary">
-    {left.map((l) => <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a>)}
-  </nav>
-
-  <a href="/" class="logo" aria-label="Jamn Good, jam + cookies, home">
-    <img src="/images/logo.png" alt="Jamn Good jam + cookies" width="700" height="574" />
-  </a>
-
-  <nav class="nav nav--right" aria-label="Secondary">
-    {right.map((l) => <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a>)}
-    <button type="button" class="cart" aria-label="Open cart" data-cart-open>
-      <svg viewBox="0 0 28 26" width="28" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M1.5 2h3.6l3.4 14.6h14.6L26 6.2H6.4" />
-        <path d="M8.5 16.6 7.6 20h16" />
-        <circle cx="10.6" cy="23" r="1.6" />
-        <circle cx="21" cy="23" r="1.6" />
-      </svg>
-      <span class="cart__count" data-cart-count hidden></span>
-    </button>
-  </nav>
-
-  <nav id="mobile-menu" class="mobile-menu" aria-label="Mobile" hidden>
-    {
-      [...left, ...right].map((l) => (
-        <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>
-          {l.label}
-        </a>
-      ))
-    }
-  </nav>
+<!-- Lies over the top of each page's hero, which leaves room for it. -->
+<header data-nav class="absolute inset-x-0 top-0 z-40 text-foreground">
+  <Wrapper variant="standard">
+    <nav class="flex items-center justify-between h-24 gap-8 text-sm" aria-label="Main">
+      <a href="/" aria-label="Jamn Good home" class="shrink-0 lg:w-48">
+        <img {...logo} class="w-auto h-20" />
+      </a>
+      <ul class="items-center hidden gap-8 lg:flex">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={isCurrent(link.href) ? 'page' : undefined}
+                class:list={['font-medium duration-200 hover:opacity-100', isCurrent(link.href) ? 'opacity-100' : 'opacity-70']}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="flex items-center justify-end gap-6 lg:w-48">
+        <button type="button" data-cart-open class="flex items-center gap-2 font-medium duration-200 hover:opacity-70">
+          Cart
+          <span
+            data-cart-count
+            hidden
+            class="grid px-1.5 text-xs rounded-full min-w-5 h-5 place-items-center bg-accent text-accent-foreground tabular-nums"
+          ></span>
+        </button>
+        <button
+          type="button"
+          data-nav-toggle
+          aria-expanded="false"
+          aria-controls="menu"
+          class="font-medium duration-200 lg:hidden hover:opacity-70"
+        >
+          Menu
+        </button>
+      </div>
+    </nav>
+  </Wrapper>
+  <div id="menu" data-nav-menu class="fixed inset-0 hidden overflow-y-auto bg-background text-foreground lg:hidden">
+    <Wrapper variant="standard" class="pb-8">
+      <div class="flex items-center justify-between h-24 text-sm">
+        <a href="/" aria-label="Jamn Good home"><img {...logo} class="w-auto h-20" /></a>
+        <button type="button" data-nav-close class="font-medium duration-200 hover:text-muted-foreground">Close</button>
+      </div>
+      <ul class="flex flex-col gap-2 py-6">
+        <li><a href="/" class="text-3xl tracking-tight duration-200 hover:text-muted-foreground">Home</a></li>
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={isCurrent(link.href) ? 'page' : undefined}
+                class="text-3xl tracking-tight duration-200 hover:text-muted-foreground"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Wrapper>
+  </div>
 </header>
 
 <script>
-  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-  const menu = document.getElementById('mobile-menu');
-  toggle?.addEventListener('click', () => {
-    const open = toggle.getAttribute('aria-expanded') !== 'true';
+  const header = document.querySelector<HTMLElement>('[data-nav]');
+  const toggle = header?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const close = header?.querySelector<HTMLButtonElement>('[data-nav-close]');
+  const menu = header?.querySelector<HTMLElement>('[data-nav-menu]');
+
+  const setOpen = (open: boolean) => {
+    if (!toggle || !menu) return;
+    menu.classList.toggle('hidden', !open);
     toggle.setAttribute('aria-expanded', String(open));
-    if (menu) menu.hidden = !open;
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) close?.focus();
+    else toggle.focus();
+  };
+
+  toggle?.addEventListener('click', () => setOpen(true));
+  close?.addEventListener('click', () => setOpen(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') setOpen(false);
   });
 </script>
-
-<style>
-  .header {
-    position: relative;
-    height: 190px;
-    z-index: 3;
-  }
-
-  .header--overlay {
-    position: absolute;
-    inset: 0 0 auto 0;
-  }
-
-  .nav {
-    position: absolute;
-    top: 54px;
-    display: flex;
-    align-items: center;
-    gap: 38.5px;
-    font-family: var(--font-mono);
-    font-size: 12.5px;
-    font-weight: 500;
-    line-height: 20px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #463a2c;
-  }
-
-  .nav--left {
-    left: 51px;
-  }
-
-  .nav--right {
-    top: 51px;
-    right: 81px;
-    gap: 39px;
-  }
-
-  .nav a,
-  .mobile-menu a {
-    transition: color 0.2s ease;
-  }
-
-  .nav a:hover,
-  .nav a[aria-current='page'],
-  .mobile-menu a:hover,
-  .mobile-menu a[aria-current='page'] {
-    color: var(--rust);
-  }
-
-  .cart {
-    position: relative;
-    display: block;
-    margin-left: 8px;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: #33271a;
-    transform: translateY(-1px);
-    line-height: 0;
-    cursor: pointer;
-  }
-
-  .cart__count {
-    position: absolute;
-    top: -7px;
-    right: -9px;
-    min-width: 17px;
-    height: 17px;
-    padding: 0 4px;
-    border-radius: 9px;
-    background: var(--rust-bg);
-    color: var(--cream);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 600;
-    line-height: 17px;
-    letter-spacing: 0;
-    text-align: center;
-  }
-
-  .logo {
-    position: absolute;
-    left: 404px;
-    top: 12px;
-    width: 206px;
-  }
-
-  .logo img {
-    width: 100%;
-    height: auto;
-  }
-
-  .menu-toggle,
-  .mobile-menu {
-    display: none;
-  }
-
-  @media (max-width: 1023px) {
-    .header,
-    .header--overlay {
-      position: relative;
-      height: auto;
-      display: grid;
-      grid-template-columns: 44px 1fr 44px;
-      align-items: center;
-      padding: 14px 16px 0;
-    }
-
-    .nav--left,
-    .nav--right a {
-      display: none;
-    }
-
-    .nav--right {
-      position: static;
-      justify-self: end;
-    }
-
-    .logo {
-      position: static;
-      justify-self: center;
-      width: 120px;
-    }
-
-    .cart {
-      margin: 0;
-      transform: none;
-    }
-
-    .menu-toggle {
-      display: block;
-      width: 44px;
-      height: 44px;
-      margin-left: -10px;
-      padding: 10px;
-      border: 0;
-      background: none;
-      color: var(--rust);
-      cursor: pointer;
-    }
-
-    .menu-toggle svg {
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-    }
-
-    .mobile-menu:not([hidden]) {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      margin-top: 10px;
-      padding: 10px 0 14px;
-      border-top: 1px solid rgba(150, 120, 90, 0.3);
-      border-bottom: 1px solid rgba(150, 120, 90, 0.3);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #463a2c;
-    }
-
-    .mobile-menu a {
-      padding: 8px 12px;
-    }
-  }
-</style>

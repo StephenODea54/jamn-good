@@ -1,7 +1,8 @@
 ---
-import { getSiteDetails } from '../lib/content';
-
-const site = await getSiteDetails();
+import Text from './fundations/elements/Text.astro';
+import Button from './fundations/elements/Button.astro';
+import Wrapper from './fundations/containers/Wrapper.astro';
+import Grid from './fundations/containers/Grid.astro';
 
 const MESSAGES: Record<string, string> = {
   subscribed: 'Thanks! You’re on the list.',
@@ -15,58 +16,46 @@ const status = Astro.url.searchParams.get('newsletter') ?? '';
 const message = MESSAGES[status];
 ---
 
-<section class="newsletter" id="newsletter" aria-labelledby="newsletter-title">
-  <div class="wrap">
-    <img class="newsletter__art" src="/images/botanical.png" alt="" width="148" height="82" loading="lazy" />
-
-    <div class="newsletter__copy">
-      <h2 id="newsletter-title" class="newsletter__title">Stay in the Loop</h2>
-      <p class="newsletter__text">
-        Be the first to know about new flavors,<br />markets, and all things Jamn Good.
-      </p>
-    </div>
-
-    <form class="newsletter__form" action="/api/subscribe" method="post" data-newsletter>
-      <label for="newsletter-email" class="visually-hidden">Email address</label>
-      <input id="newsletter-email" type="email" name="email" placeholder="enter your email" autocomplete="email" required />
-      <div class="newsletter__trap" aria-hidden="true">
-        <label for="newsletter-website">Leave this empty</label>
-        <input id="newsletter-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+<section id="newsletter" aria-labelledby="newsletter-title">
+  <Wrapper variant="standard" class="py-24">
+    <Grid class="p-8 gap-y-8 rounded-xl bg-muted lg:p-12">
+      <div class="flex flex-col col-span-12 gap-4 lg:col-span-6">
+        <Text id="newsletter-title" tag="h2" variant="displaySM" class="tracking-tight text-foreground font-medium">
+          Stay in the loop
+        </Text>
+        <Text tag="p" variant="textBase" class="max-w-md text-muted-foreground text-pretty">
+          Be the first to know about new flavors, markets, and all things Jamn Good.
+        </Text>
       </div>
-      <button type="submit">Join</button>
-    </form>
-    <p class="newsletter__status" role="status" data-newsletter-status data-tone={status === 'invalid' || status === 'error' ? 'error' : undefined}>
-      {message}
-    </p>
-
-    <ul class="social" aria-label="Social media">
-      {site.facebook && (
-      <li>
-        <a href={site.facebook} target="_blank" rel="noopener" aria-label="Jamn Good on Facebook (opens in a new tab)">
-          <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
-            <circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.3" />
-            <path
-              d="M17.4 24.5v-7.4h2.4l.4-2.8h-2.8v-1.8c0-.8.3-1.4 1.4-1.4h1.5V8.6a19 19 0 0 0-2.2-.1c-2.2 0-3.6 1.3-3.6 3.7v2.1h-2.4v2.8h2.4v7.4h2.9Z"
-              fill="currentColor"
-            />
-          </svg>
-        </a>
-      </li>
-      )}
-      {site.instagram && (
-      <li>
-        <a href={site.instagram} target="_blank" rel="noopener" aria-label="Jamn Good on Instagram (opens in a new tab)">
-          <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" fill="none" stroke="currentColor">
-            <circle cx="16" cy="16" r="15" stroke-width="1.3" />
-            <rect x="9.3" y="9.3" width="13.4" height="13.4" rx="3.8" stroke-width="1.6" />
-            <circle cx="16" cy="16" r="3.2" stroke-width="1.6" />
-            <circle cx="19.9" cy="12.1" r="0.6" fill="currentColor" stroke="none" />
-          </svg>
-        </a>
-      </li>
-      )}
-    </ul>
-  </div>
+      <div class="flex flex-col col-span-12 gap-3 lg:col-span-6 lg:justify-center">
+        <form class="flex flex-col gap-3 sm:flex-row" action="/api/subscribe" method="post" data-newsletter>
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <input
+            id="newsletter-email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+            class="block w-full h-11 px-4 text-base border-0 rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:ring-0 focus:outline-2 focus:outline-offset-4 focus:outline-ring"
+          />
+          <div class="absolute -left-[9999px]" aria-hidden="true">
+            <label for="newsletter-website">Leave this empty</label>
+            <input id="newsletter-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          <Button type="submit" variant="primary" size="md" class="shrink-0">Join</Button>
+        </form>
+        <p
+          class="min-h-5 text-sm text-muted-foreground data-[tone=error]:text-accent"
+          role="status"
+          data-newsletter-status
+          data-tone={status === 'invalid' || status === 'error' ? 'error' : undefined}
+        >
+          {message}
+        </p>
+      </div>
+    </Grid>
+  </Wrapper>
 </section>
 
 <script>
@@ -99,186 +88,3 @@ const message = MESSAGES[status];
     if (status === 'subscribed' || status === 'confirm' || status === 'already') form.reset();
   });
 </script>
-
-<style>
-  .newsletter {
-    position: relative;
-    height: 82px;
-    background: #62602f url('/images/bg-newsletter.jpg') center top / auto 82px no-repeat;
-    color: #f2efdd;
-  }
-
-  .newsletter__art {
-    position: absolute;
-    left: 26px;
-    top: 0;
-    pointer-events: none;
-  }
-
-  .newsletter__copy {
-    position: absolute;
-    left: 227px;
-    top: 15px;
-  }
-
-  .newsletter__title {
-    font-family: var(--font-subhead);
-    font-size: 9.8px;
-    font-weight: 700;
-    line-height: 20px;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    color: #f2efdd;
-  }
-
-  .newsletter__text {
-    margin-top: 0;
-    font-size: 11.05px;
-    line-height: 17px;
-    color: #dbd9c1;
-  }
-
-  .newsletter__form {
-    position: absolute;
-    left: 489px;
-    top: 26px;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .newsletter__form input {
-    width: 223px;
-    height: 29px;
-    padding: 0 12px 0 13px;
-    border: 0;
-    border-radius: 1px;
-    background: #f5ece0;
-    color: var(--ink);
-    font-size: 11.3px;
-  }
-
-  .newsletter__form input:focus {
-    outline: none;
-  }
-
-  .newsletter__form input:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--rust-bg);
-  }
-
-  .newsletter__form input::placeholder {
-    color: #6e6150;
-    opacity: 1;
-  }
-
-  .newsletter__form button {
-    width: 64px;
-    height: 31px;
-    padding: 0;
-    border: 0;
-    border-radius: 1px;
-    background: var(--rust-bg);
-    color: #fcf6ee;
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 1.3px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-
-  .newsletter__form button:hover {
-    background: #933f22;
-  }
-
-  .newsletter__form button:disabled {
-    opacity: 0.7;
-    cursor: wait;
-  }
-
-  /* spam trap: off-screen, not display:none (some bots skip hidden fields) */
-  .newsletter__trap {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  }
-
-  .newsletter__status {
-    position: absolute;
-    left: 489px;
-    top: 61px;
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 10.5px;
-    line-height: 14px;
-    color: #f2efdd;
-  }
-
-  .newsletter__status[data-tone='error'] {
-    color: #ffd2bf;
-  }
-
-  .social {
-    position: absolute;
-    left: 847px;
-    top: 25px;
-    display: flex;
-    gap: 9px;
-    color: #eeead6;
-  }
-
-  .social a {
-    display: block;
-    line-height: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  .social a:hover {
-    opacity: 0.75;
-  }
-
-  @media (max-width: 1023px) {
-    .newsletter {
-      height: auto;
-      background-size: cover;
-    }
-
-    .newsletter .wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      padding: 28px 16px;
-      text-align: center;
-    }
-
-    .newsletter__art {
-      display: none;
-    }
-
-    .newsletter__copy,
-    .newsletter__form,
-    .newsletter__status,
-    .social {
-      position: static;
-    }
-
-    .newsletter__status:empty {
-      display: none;
-    }
-
-    .newsletter__form {
-      width: 100%;
-      max-width: 420px;
-    }
-
-    .newsletter__form input {
-      flex: 1;
-      min-width: 0;
-      width: auto;
-    }
-  }
-</style>

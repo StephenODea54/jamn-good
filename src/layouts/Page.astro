@@ -13,13 +13,9 @@ interface Props {
 ---
 
 <Base {...Astro.props}>
-  <div class="page">
-    <div class="wrap">
-      <Header />
-    </div>
-    <main>
-      <slot />
-    </main>
-    <Footer />
-  </div>
+  <Header />
+  <main class="grow">
+    <slot />
+  </main>
+  <Footer />
 </Base>

@@ -1,6 +1,11 @@
 ---
 import Page from '../../layouts/Page.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import StockBadge from '../../components/StockBadge.astro';
+import Text from '../../components/fundations/elements/Text.astro';
+import Button from '../../components/fundations/elements/Button.astro';
+import Wrapper from '../../components/fundations/containers/Wrapper.astro';
+import Grid from '../../components/fundations/containers/Grid.astro';
 import { formatPrice } from '../../data/products';
 import { getProduct, getProducts } from '../../lib/content';
 
@@ -22,9 +27,8 @@ const hero = product.hero ?? product.image;
 const { rating } = product;
 const facts = [
   { label: 'Ingredients', text: product.ingredients },
-  { label: 'Storage &amp; Shelf Life', text: product.storage },
+  { label: 'Storage and shelf life', text: product.storage },
 ].filter((f): f is { label: string; text: string } => Boolean(f.text));
-const tall = Boolean(product.hero);
 
 // Product details for search results (price and whether it's in stock).
 const origin = (Astro.site ?? Astro.url).origin;
@@ -50,363 +54,98 @@ const jsonLd = {
 ---
 
 <Page title={`${product.name} | Jamn Good`} description={product.description} image={product.image?.src} jsonLd={jsonLd}>
-  <div class="wrap pd">
-    <a href="/shop" class="pd__back">
-      <svg viewBox="0 0 22 12" width="22" height="12" aria-hidden="true"><path d="M21 6H2M7 1 2 6l5 5" /></svg>
-      Back to Shop
-    </a>
-
-    <div class="pd__main" data-product>
-      <div class="pd__gallery">
-        <div class:list={['pd__photo', { 'pd__photo--tall': tall }]}>
-          {hero && <img src={hero.src} alt={hero.alt} width="491" height={tall ? 570 : 481} />}
-          {product.outOfStock && <span class="stock-badge">Out of Stock</span>}
-        </div>
-        {
-          product.gallery.length > 0 && (
-            <ul class="pd__thumbs">
-              {product.gallery.map((g) => (
-                <li>
-                  <img src={g.src} alt="" width="153" height="140" loading="lazy" />
-                </li>
-              ))}
-            </ul>
-          )
-        }
-      </div>
-
-      <div class="pd__info">
-        <h1 class="pd__title">{product.name}</h1>
-        <p class="pd__price">{formatPrice(product.price)}</p>
-        {product.note && <p class="pd__note">{product.note}</p>}
-
-        {
-          rating !== undefined && (
-            <p class="pd__rating">
-              <span class="pd__stars" aria-hidden="true">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <svg viewBox="0 0 20 19" width="16" height="15" class:list={{ 'is-off': i >= rating }}>
-                    <path d="m10 1 2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 14.8l-5.6 3.3 1.4-6.3L1 7.5l6.4-.6Z" />
-                  </svg>
+  <section>
+    <Wrapper variant="standard" class="flex flex-col gap-10 pt-36 pb-24">
+      <a href="/shop" class="flex items-center gap-2 text-sm font-medium duration-200 w-fit text-muted-foreground hover:text-foreground">
+        <span aria-hidden="true">&larr;</span> Back to shop
+      </a>
+      <Grid class="gap-y-12" data-product>
+        <div class="flex flex-col col-span-12 gap-6 lg:col-span-7">
+          <div class="relative overflow-hidden rounded-xl bg-muted">
+            {hero && <img src={hero.src} alt={hero.alt} width={hero.width ?? 982} height={hero.height ?? 1140} class:list={['object-cover w-full aspect-square', { 'opacity-60': product.outOfStock }]} />}
+            {product.outOfStock && <StockBadge />}
+          </div>
+          {
+            product.gallery.length > 0 && (
+              <ul class="grid grid-cols-3 gap-6">
+                {product.gallery.map((g) => (
+                  <li class="overflow-hidden rounded-xl bg-muted">
+                    <img src={g.src} alt="" width="300" height="300" loading="lazy" class="object-cover w-full aspect-square" />
+                  </li>
                 ))}
-              </span>
-              <span class="visually-hidden">Rated {rating} out of 5,</span>
-              {product.reviews !== undefined && <span class="pd__reviews">({product.reviews} reviews)</span>}
-            </p>
-          )
-        }
-
-        <p class="pd__desc">{product.description}</p>
-
-        {
-          product.outOfStock ? (
-            <>
-              <p class="pd__stock">Sold out for now. Check back soon!</p>
-              <button type="button" class="btn btn--olive pd__add" disabled>Sold Out</button>
-            </>
-          ) : (
-            <>
-              <div class="qty pd__qty" data-qty>
-                <button type="button" aria-label="Decrease quantity" data-qty-dec>−</button>
-                <input type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="Quantity" data-qty-input />
-                <button type="button" aria-label="Increase quantity" data-qty-inc>+</button>
+              </ul>
+            )
+          }
+        </div>
+        <div class="flex flex-col col-span-12 gap-10 lg:col-span-5">
+          <div class="flex flex-col gap-4">
+            <h1 class="text-5xl tracking-tighter sm:text-6xl text-foreground font-medium text-balance">{product.name}</h1>
+            <Text tag="p" variant="displayXS" class="tracking-tight text-foreground tabular-nums">
+              {product.note ? `${formatPrice(product.price)} ${product.note}` : formatPrice(product.price)}
+            </Text>
+            {
+              rating !== undefined && (
+                <p class="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span class="flex gap-0.5 text-foreground" aria-hidden="true">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <svg viewBox="0 0 20 19" width="16" height="15" fill="currentColor" class:list={{ 'opacity-20': i >= rating }}>
+                        <path d="m10 1 2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 14.8l-5.6 3.3 1.4-6.3L1 7.5l6.4-.6Z" />
+                      </svg>
+                    ))}
+                  </span>
+                  <span class="sr-only">Rated {rating} out of 5,</span>
+                  {product.reviews !== undefined && <span>({product.reviews} reviews)</span>}
+                </p>
+              )
+            }
+          </div>
+          <Text tag="p" variant="textLG" class="text-muted-foreground text-pretty">{product.description}</Text>
+          {
+            product.outOfStock ? (
+              <div class="flex flex-col gap-4">
+                <Text tag="p" variant="textBase" class="text-foreground">Sold out for now. Check back soon!</Text>
+                <Button variant="primary" size="md" class="w-fit" disabled>Sold out</Button>
               </div>
-              <button type="button" class="btn btn--olive pd__add" data-add-to-cart={product.slug}>Add to Cart</button>
-            </>
-          )
-        }
-      </div>
-    </div>
+            ) : (
+              <div class="flex flex-wrap gap-3">
+                <div class="h-11 qty" data-qty>
+                  <button type="button" aria-label="Decrease quantity" data-qty-dec>−</button>
+                  <input type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="Quantity" data-qty-input />
+                  <button type="button" aria-label="Increase quantity" data-qty-inc>+</button>
+                </div>
+                <Button variant="primary" size="md" data-add-to-cart={product.slug}>Add to cart</Button>
+              </div>
+            )
+          }
+          {
+            facts.length > 0 && (
+              <dl class="flex flex-col gap-6 p-8 rounded-xl bg-muted">
+                {facts.map((f) => (
+                  <div class="flex flex-col gap-1">
+                    <dt class="text-sm font-medium text-foreground">{f.label}</dt>
+                    <dd class="text-sm text-muted-foreground text-pretty">{f.text}</dd>
+                  </div>
+                ))}
+              </dl>
+            )
+          }
+          <Text tag="p" variant="textSM" class="text-muted-foreground">Local pickup only. We’ll reach out after you order to set up a time.</Text>
+        </div>
+      </Grid>
+    </Wrapper>
+  </section>
 
-    {
-      facts.length > 0 && (
-        <dl class:list={['pd__facts', { 'pd__facts--single': facts.length === 1 }]}>
-          {facts.map((f) => (
-            <div>
-              <dt set:html={f.label} />
-              <dd>{f.text}</dd>
-            </div>
-          ))}
-        </dl>
-      )
-    }
-
-    <section class="pd__related" aria-labelledby="related-title">
-      <h2 id="related-title" class="pd__related-title">You might also like</h2>
-      <div class="pd__related-grid">
-        {related.map((p) => <ProductCard product={p} />)}
-      </div>
-    </section>
-  </div>
+  <section aria-labelledby="related-title">
+    <Wrapper variant="standard" class="py-24">
+      <Text id="related-title" tag="h2" variant="displaySM" class="tracking-tight text-foreground font-medium">You might also like</Text>
+      <Grid tag="ul" class="mt-12 gap-y-12">
+        {related.map((p) => <li class="col-span-12 sm:col-span-6 lg:col-span-4"><ProductCard product={p} /></li>)}
+      </Grid>
+    </Wrapper>
+  </section>
 </Page>
 
 <script>
   import { initQtySteppers } from '../../scripts/cart';
   initQtySteppers();
 </script>
-
-<style>
-  .pd__stock {
-    margin-top: 18px;
-    font-style: italic;
-    color: var(--rust);
-  }
-
-  .pd {
-    padding-bottom: 64px;
-  }
-
-  .pd__back {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    margin: 8px 0 0 39px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    color: #5b4e3f;
-  }
-
-  .pd__back svg {
-    fill: none;
-    stroke: var(--rust);
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .pd__back:hover {
-    color: var(--rust);
-  }
-
-  .pd__main {
-    display: grid;
-    grid-template-columns: 491px 431px;
-    justify-content: space-between;
-    margin: 26px 31px 0 34px;
-  }
-
-  .pd__photo {
-    position: relative;
-    aspect-ratio: 300 / 294;
-    overflow: hidden;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(60, 40, 20, 0.16);
-  }
-
-  .pd__photo--tall {
-    aspect-ratio: 491 / 570;
-  }
-
-  .pd__photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .pd__thumbs {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-top: 22px;
-  }
-
-  .pd__thumbs img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 153 / 140;
-    object-fit: cover;
-    border-radius: 2px;
-    box-shadow: 0 1px 4px rgba(60, 40, 20, 0.14);
-  }
-
-  .pd__info {
-    padding-top: 42px;
-  }
-
-  .pd__title {
-    font-family: var(--font-display);
-    font-size: 42px;
-    font-weight: 600;
-    line-height: 1.1;
-    color: var(--ink);
-  }
-
-  .pd__price {
-    margin-top: 12px;
-    font-family: var(--font-mono);
-    font-size: 19px;
-    font-weight: 600;
-    color: #923b1f;
-  }
-
-  .pd__note {
-    margin-top: 2px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: #923b1f;
-  }
-
-  .pd__rating {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 22px;
-  }
-
-  .pd__stars {
-    display: flex;
-    gap: 3px;
-  }
-
-  .pd__stars svg {
-    fill: #b4532f;
-  }
-
-  .pd__stars svg.is-off {
-    fill: #d8cbb8;
-  }
-
-  .pd__reviews {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--ink-muted);
-  }
-
-  .pd__desc {
-    margin-top: 24px;
-    font-size: 16px;
-    line-height: 1.75;
-    color: var(--ink-soft);
-  }
-
-  .pd__qty {
-    margin-top: 30px;
-  }
-
-  .pd__add {
-    display: flex;
-    width: 100%;
-    height: 54px;
-    margin-top: 14px;
-    font-size: 13px;
-    letter-spacing: 2.4px;
-  }
-
-  .pd__facts {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin: 64px 31px 0 34px;
-    border-block: 1px solid rgba(150, 125, 95, 0.3);
-  }
-
-  .pd__facts--single {
-    grid-template-columns: 1fr;
-  }
-
-  .pd__facts > div {
-    padding: 28px 26px 30px;
-  }
-
-  .pd__facts > div + div {
-    border-left: 1px solid rgba(150, 125, 95, 0.3);
-    padding-left: 44px;
-  }
-
-  .pd__facts dt {
-    font-family: var(--font-subhead);
-    font-size: 15px;
-    font-weight: 700;
-    color: #9f3e1c;
-  }
-
-  .pd__facts dd {
-    margin: 12px 0 0;
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: var(--ink-soft);
-  }
-
-  .pd__related {
-    margin-top: 56px;
-  }
-
-  .pd__related-title {
-    font-family: var(--font-display);
-    font-size: 32px;
-    font-weight: 600;
-    text-align: center;
-    color: var(--ink);
-  }
-
-  .pd__related-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 300px);
-    justify-content: space-between;
-    margin: 30px 31px 0 34px;
-  }
-
-  @media (max-width: 1023px) {
-    .pd {
-      padding: 0 16px 48px;
-    }
-
-    .pd__back {
-      margin: 18px 0 0;
-    }
-
-    .pd__main {
-      grid-template-columns: 1fr;
-      gap: 24px;
-      margin: 18px 0 0;
-    }
-
-    .pd__gallery {
-      max-width: 520px;
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    .pd__thumbs {
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .pd__info {
-      max-width: 520px;
-      width: 100%;
-      margin: 0 auto;
-      padding-top: 0;
-    }
-
-    .pd__title {
-      font-size: 32px;
-    }
-
-    .pd__facts {
-      grid-template-columns: 1fr;
-      margin: 40px 0 0;
-    }
-
-    .pd__facts > div,
-    .pd__facts > div + div {
-      padding: 22px 4px;
-      border-left: 0;
-    }
-
-    .pd__facts > div + div {
-      border-top: 1px solid rgba(150, 125, 95, 0.3);
-    }
-
-    .pd__related-title {
-      font-size: 26px;
-    }
-
-    .pd__related-grid {
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-      gap: 32px 20px;
-      margin: 24px 0 0;
-    }
-  }
-</style>

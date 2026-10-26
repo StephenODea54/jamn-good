@@ -1,108 +1,62 @@
 ---
+import Text from './fundations/elements/Text.astro';
+import Button from './fundations/elements/Button.astro';
+import StockBadge from './StockBadge.astro';
 import { type Product, formatPrice, productUrl } from '../data/products';
 
 interface Props {
   product: Product;
+  /** Load the photo straight away (cards near the top of the page) */
+  eager?: boolean;
 }
 
-const { product: p } = Astro.props;
+const { product: p, eager = false } = Astro.props;
 const url = productUrl(p);
 ---
 
-<article class="card" data-kind={p.kind} data-limited={p.limited ? "true" : "false"} data-out-of-stock={p.outOfStock ? "true" : undefined}>
-  <a href={url} class="card__media" tabindex="-1" aria-hidden="true">
-    {p.image && <img src={p.image.src} alt="" width="300" height="294" loading="lazy" />}
-    {p.outOfStock && <span class="stock-badge">Out of Stock</span>}
+<article
+  class="flex flex-col gap-4 group"
+  data-kind={p.kind}
+  data-limited={p.limited ? 'true' : 'false'}
+  data-out-of-stock={p.outOfStock ? 'true' : undefined}
+>
+  <a href={url} class="relative block overflow-hidden rounded-xl bg-muted" tabindex="-1" aria-hidden="true">
+    {
+      p.image && (
+        <img
+          src={p.image.src}
+          alt=""
+          width={p.image.width ?? 1000}
+          height={p.image.height ?? 980}
+          loading={eager ? 'eager' : 'lazy'}
+          class:list={[
+            'object-cover w-full duration-500 ease-out aspect-square group-hover:scale-105',
+            { 'opacity-60': p.outOfStock },
+          ]}
+        />
+      )
+    }
+    {p.outOfStock && <StockBadge />}
   </a>
-  <h3 class="card__name"><a href={url}>{p.name}</a></h3>
-  <p class="card__price">{formatPrice(p.price)}</p>
-  {p.note && <p class="card__note">{p.note}</p>}
-  {
-    p.outOfStock ? (
-      <button type="button" class="btn btn--olive card__add" disabled>Sold Out</button>
-    ) : (
-      <button type="button" class="btn btn--olive card__add" data-add-to-cart={p.slug}>Add to Cart</button>
-    )
-  }
+  <div class="flex flex-col items-start gap-4">
+    <div class="flex flex-col gap-1">
+      <Text tag="h3" variant="textLG" class="tracking-tight text-foreground font-medium">
+        <a href={url} class="duration-200 hover:text-muted-foreground">{p.name}</a>
+      </Text>
+      <Text tag="p" variant="textSM" class="text-muted-foreground tabular-nums">
+        {p.note ? `${formatPrice(p.price)} ${p.note}` : formatPrice(p.price)}
+      </Text>
+    </div>
+    {
+      p.outOfStock ? (
+        <Button variant="muted" size="sm" disabled>
+          Sold out
+        </Button>
+      ) : (
+        <Button variant="muted" size="sm" data-add-to-cart={p.slug}>
+          Add to cart
+        </Button>
+      )
+    }
+  </div>
 </article>
-
-<style>
-  .card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .card__media {
-    position: relative;
-    display: block;
-    width: 100%;
-    aspect-ratio: 300 / 294;
-    overflow: hidden;
-    border-radius: 2px;
-    box-shadow: 0 1px 4px rgba(60, 40, 20, 0.14);
-  }
-
-  .card__media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-  }
-
-  .card[data-out-of-stock] .card__media img {
-    opacity: 0.6;
-  }
-
-  .card__media:hover img {
-    transform: scale(1.03);
-  }
-
-  .card__name {
-    margin-top: 19px;
-    font-family: var(--font-subhead);
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 22px;
-    color: #24190e;
-  }
-
-  .card__name a:hover {
-    color: var(--rust);
-  }
-
-  .card__price {
-    position: relative;
-    margin-top: 6px;
-    padding-bottom: 8px;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    color: #923b1f;
-  }
-
-  .card__price::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 46px;
-    height: 2px;
-    transform: translateX(-50%);
-    background: rgba(161, 85, 50, 0.6);
-  }
-
-  .card__note {
-    margin-top: 4px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: #923b1f;
-  }
-
-  .card__add {
-    margin-top: 14px;
-    width: 150px;
-  }
-</style>

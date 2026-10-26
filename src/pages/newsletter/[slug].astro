@@ -2,6 +2,8 @@
 import { PortableText } from 'emdash/ui';
 import Page from '../../layouts/Page.astro';
 import Newsletter from '../../components/Newsletter.astro';
+import Text from '../../components/fundations/elements/Text.astro';
+import Wrapper from '../../components/fundations/containers/Wrapper.astro';
 import { formatIssueDate, getNewsletter } from '../../lib/content';
 
 const issue = await getNewsletter(Astro.params.slug ?? '');
@@ -11,113 +13,25 @@ if (!issue) {
 ---
 
 <Page title={`${issue.title} | Jamn Good`} description={issue.preview ?? 'News from Jamn Good.'}>
-  <article class="wrap issue nl-fill">
-    <a class="issue__back" href="/newsletter">
-      <svg viewBox="0 0 22 12" width="22" height="12" aria-hidden="true"><path d="M21 6H2M7 1 2 6l5 5" /></svg>
-      All newsletters
-    </a>
-    <header class="page-head">
-      <p class="page-head__eyebrow eyebrow">{formatIssueDate(issue.publishedAt)}</p>
-      <h1 class="page-head__title">{issue.title}</h1>
-      <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
-    </header>
-    <div class="issue__body">
-      <PortableText value={issue.body} />
-    </div>
+  <article>
+    <Wrapper variant="standard" class="flex flex-col gap-12 pt-36 pb-8">
+      <a
+        href="/newsletter"
+        class="flex items-center gap-2 text-sm font-medium duration-200 w-fit text-muted-foreground hover:text-foreground"
+      >
+        <span aria-hidden="true">&larr;</span> All newsletters
+      </a>
+      <header class="flex flex-col max-w-3xl gap-4">
+        <Text tag="p" variant="textSM" class="text-muted-foreground">{formatIssueDate(issue.publishedAt)}</Text>
+        <h1 class="text-5xl tracking-tighter sm:text-6xl text-foreground font-medium text-balance">{issue.title}</h1>
+      </header>
+      <div
+        class="max-w-2xl prose prose-lg prose-headings:font-medium prose-headings:tracking-tight prose-a:text-foreground prose-a:no-underline prose-img:rounded-xl"
+      >
+        <PortableText value={issue.body} />
+      </div>
+    </Wrapper>
   </article>
+
   <Newsletter />
 </Page>
-
-<style>
-  /* keep the signup band right above the footer on short pages */
-  :global(.page > main:has(> .nl-fill)) {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nl-fill {
-    flex: 1;
-  }
-
-  .issue {
-    padding-top: 28px;
-    padding-bottom: 56px;
-  }
-
-  .issue__back {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--ink-muted);
-    text-decoration: none;
-  }
-
-  .issue__back svg {
-    fill: none;
-    stroke: var(--rust);
-    stroke-width: 1.5;
-  }
-
-  .issue__body {
-    max-width: 640px;
-    margin: 32px auto 0;
-    font-size: 17px;
-    line-height: 1.7;
-    color: var(--ink-soft);
-  }
-
-  .issue__body :global(* + *) {
-    margin-top: 1em;
-  }
-
-  .issue__body :global(h2),
-  .issue__body :global(h3) {
-    margin-top: 1.6em;
-    font-family: var(--font-display);
-    font-weight: 600;
-    line-height: 1.25;
-    color: var(--ink);
-  }
-
-  .issue__body :global(h2) {
-    font-size: 26px;
-  }
-
-  .issue__body :global(h3) {
-    font-size: 21px;
-  }
-
-  .issue__body :global(ul),
-  .issue__body :global(ol) {
-    padding-left: 1.4em;
-  }
-
-  .issue__body :global(ul) {
-    list-style: disc;
-  }
-
-  .issue__body :global(ol) {
-    list-style: decimal;
-  }
-
-  .issue__body :global(li + li) {
-    margin-top: 0.35em;
-  }
-
-  .issue__body :global(a) {
-    color: var(--rust);
-  }
-
-  .issue__body :global(blockquote) {
-    padding-left: 1em;
-    border-left: 3px solid var(--rust-bg);
-    font-style: italic;
-  }
-
-  .issue__body :global(img) {
-    max-width: 100%;
-    height: auto;
-  }
-</style>

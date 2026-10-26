@@ -1,6 +1,7 @@
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import { d1, r2 } from '@emdash-cms/cloudflare';
+import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import emdash from 'emdash/astro';
@@ -37,5 +38,8 @@ export default defineConfig({
       ],
     }),
   ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
   devToolbar: { enabled: false },
 });

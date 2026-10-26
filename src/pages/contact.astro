@@ -1,72 +1,82 @@
 ---
 import Page from '../layouts/Page.astro';
+import Text from '../components/fundations/elements/Text.astro';
+import Button from '../components/fundations/elements/Button.astro';
+import Wrapper from '../components/fundations/containers/Wrapper.astro';
+import Grid from '../components/fundations/containers/Grid.astro';
 import { getSiteDetails } from '../lib/content';
 
 const site = await getSiteDetails();
 const { email } = site;
+
+const field =
+  'block w-full h-11 px-4 text-base border-0 rounded-md bg-muted text-foreground placeholder:text-muted-foreground focus:ring-0 focus:outline-2 focus:outline-offset-4 focus:outline-ring';
+const label = 'text-sm font-medium text-foreground';
+const links = [
+  { label: email, href: `mailto:${email}`, kind: 'Email' },
+  site.instagram && { label: '@jamngood', href: site.instagram, kind: 'Instagram' },
+  site.facebook && { label: 'Jamn Good', href: site.facebook, kind: 'Facebook' },
+].filter((l): l is { label: string; href: string; kind: string } => Boolean(l));
 ---
 
-<Page title="Contact | Jamn Good" description="Questions, special requests or wholesale enquiries — get in touch with Jamn Good.">
-  <section class="contact">
-    <div class="wrap">
-      <header class="page-head contact__head">
-        <p class="page-head__eyebrow eyebrow">Contact</p>
-        <h1 class="page-head__title">Let’s get in touch.</h1>
-        <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
-      </header>
+<Page title="Contact | Jamn Good" description="Questions, special requests or wholesale enquiries: get in touch with Jamn Good.">
+  <section>
+    <Wrapper variant="standard" class="flex flex-col gap-8 pt-48 pb-16">
+      <h1 class="max-w-5xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl text-foreground font-medium text-balance">
+        Let’s get in touch.
+      </h1>
+      <Text tag="p" variant="textLG" class="max-w-xl text-muted-foreground text-pretty">
+        Have a question, special request, or interested in a wholesale opportunity? We’d love to hear from you!
+      </Text>
+    </Wrapper>
+  </section>
 
-      <div class="contact__body">
-        <div class="contact__info">
-          <p class="contact__intro">
-            Have a question, special request, or interested in a wholesale opportunity? We’d love to hear from you!
-          </p>
-
-          <ul class="contact__links">
-            <li>
-              <a href={`mailto:${email}`}>
-                <span class="contact__icon" aria-hidden="true">
-                  <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5.5h14v9H3zM3.4 6l6.6 5 6.6-5" /></svg>
-                </span>
-                {email}
-              </a>
-            </li>
-            {site.facebook && (
-            <li>
-              <a href={site.facebook} target="_blank" rel="noopener">
-                <span class="contact__icon" aria-hidden="true">
-                  <svg viewBox="0 0 20 20" width="20" height="20"><path class="fill" d="M11 17v-6h2.1l.4-2.5H11V7c0-.7.3-1.2 1.3-1.2h1.3V3.6a17 17 0 0 0-1.9-.1c-2 0-3.2 1.2-3.2 3.3v1.7H6.4V11h2.1v6Z" /></svg>
-                </span>
-                Jamn Good<span class="visually-hidden"> on Facebook (opens in a new tab)</span>
-              </a>
-            </li>
-            )}
-            {site.instagram && (
-            <li>
-              <a href={site.instagram} target="_blank" rel="noopener">
-                <span class="contact__icon" aria-hidden="true">
-                  <svg viewBox="0 0 20 20" width="20" height="20"><rect x="4" y="4" width="12" height="12" rx="3.5" /><circle cx="10" cy="10" r="2.8" /><circle class="fill" cx="13.4" cy="6.6" r=".7" /></svg>
-                </span>
-                @jamngood
-              </a>
-            </li>
-            )}
+  <section>
+    <Wrapper variant="standard" class="pb-24">
+      <Grid class="gap-y-12">
+        <form class="flex flex-col col-span-12 gap-6 lg:col-span-6" data-contact-form data-email={email}>
+          <div class="flex flex-col gap-2">
+            <label for="c-name" class={label}>Name</label>
+            <input id="c-name" name="name" type="text" autocomplete="name" required class={field} />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="c-email" class={label}>Email</label>
+            <input id="c-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required class={field} />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="c-message" class={label}>Message</label>
+            <textarea
+              id="c-message"
+              name="message"
+              rows="6"
+              required
+              class="block w-full px-4 py-3 text-base border-0 rounded-md resize-none bg-muted text-foreground placeholder:text-muted-foreground focus:ring-0 focus:outline-2 focus:outline-offset-4 focus:outline-ring"
+            ></textarea>
+          </div>
+          <Button type="submit" variant="primary" size="md" class="w-fit">Send message</Button>
+          <p class="text-sm text-muted-foreground" role="status" data-status></p>
+        </form>
+        <div class="flex flex-col items-center justify-between col-span-12 gap-10 p-8 rounded-xl bg-muted lg:col-span-6">
+          <img src="/images/logo.webp" alt="" width="640" height="469" loading="lazy" class="w-full my-auto max-w-80" />
+          <ul class="grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
+            {
+              links.map((l) => (
+                <li class="flex flex-col gap-1">
+                  <span class="text-sm text-muted-foreground">{l.kind}</span>
+                  <a
+                    href={l.href}
+                    class="text-sm font-medium break-words duration-200 text-foreground hover:text-muted-foreground"
+                    {...(l.href.startsWith('http') && { target: '_blank', rel: 'noopener' })}
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))
+            }
           </ul>
         </div>
-
-        <form class="contact__form" data-contact-form data-email={email}>
-          <label class="visually-hidden" for="c-name">Name</label>
-          <input id="c-name" name="name" type="text" placeholder="Name" autocomplete="name" required />
-          <label class="visually-hidden" for="c-email">Email</label>
-          <input id="c-email" name="email" type="email" placeholder="Email" autocomplete="email" required />
-          <label class="visually-hidden" for="c-message">Message</label>
-          <textarea id="c-message" name="message" placeholder="Message" rows="5" required></textarea>
-          <button type="submit" class="btn btn--rust contact__send">Send Message</button>
-          <p class="contact__status" role="status" data-status></p>
-        </form>
-      </div>
-    </div>
-
-    <img class="contact__strawberry" src="/images/contact-strawberry.png" alt="" width="330" height="193" loading="lazy" />
+      </Grid>
+    </Wrapper>
   </section>
 </Page>
 
@@ -93,152 +103,3 @@ const { email } = site;
     if (status) status.textContent = 'Opening your email app… thanks for reaching out!';
   });
 </script>
-
-<style>
-  .contact {
-    position: relative;
-    min-height: 600px;
-    padding-bottom: 150px;
-  }
-
-  .contact__head {
-    padding-top: 8px;
-  }
-
-  .contact__body {
-    display: grid;
-    grid-template-columns: 360px 453px;
-    justify-content: space-between;
-    margin: 38px 62px 0 69px;
-  }
-
-  .contact__intro {
-    font-size: 16.5px;
-    line-height: 1.75;
-    color: var(--ink-soft);
-  }
-
-  .contact__links {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 28px;
-  }
-
-  .contact__links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 16px;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    color: var(--ink-soft);
-  }
-
-  .contact__links a:hover {
-    color: var(--rust);
-  }
-
-  .contact__icon {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 3px;
-    background: var(--rust-bg);
-    color: var(--cream);
-  }
-
-  .contact__icon svg {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.5;
-    stroke-linejoin: round;
-  }
-
-  .contact__icon .fill {
-    fill: currentColor;
-    stroke: none;
-  }
-
-  .contact__form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .contact__form input,
-  .contact__form textarea {
-    width: 100%;
-    padding: 13px 16px;
-    border: 1px solid rgba(140, 115, 85, 0.45);
-    border-radius: 1px;
-    background: rgba(255, 252, 245, 0.55);
-    color: var(--ink);
-    font-size: 14px;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-  }
-
-  .contact__form input {
-    height: 46px;
-  }
-
-  .contact__form textarea {
-    height: 122px;
-    resize: vertical;
-  }
-
-  .contact__form ::placeholder {
-    color: #8a7b68;
-  }
-
-  .contact__form input:focus,
-  .contact__form textarea:focus {
-    outline: none;
-    border-color: var(--rust);
-    background: rgba(255, 252, 245, 0.85);
-  }
-
-  .contact__send {
-    height: 50px;
-    margin-top: 2px;
-    font-size: 12.5px;
-    letter-spacing: 2.4px;
-  }
-
-  .contact__status {
-    min-height: 1em;
-    font-size: 13px;
-    color: var(--ink-muted);
-  }
-
-  .contact__strawberry {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 320px;
-    height: auto;
-    pointer-events: none;
-  }
-
-  @media (max-width: 1023px) {
-    .contact {
-      min-height: 0;
-      padding: 0 16px 140px;
-    }
-
-    .contact__head {
-      padding-top: 28px;
-    }
-
-    .contact__body {
-      grid-template-columns: 1fr;
-      gap: 32px;
-      max-width: 560px;
-      margin: 32px auto 0;
-    }
-
-    .contact__strawberry {
-      width: 220px;
-    }
-  }
-</style>

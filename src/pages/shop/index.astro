@@ -1,6 +1,9 @@
 ---
 import Page from '../../layouts/Page.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import Text from '../../components/fundations/elements/Text.astro';
+import Wrapper from '../../components/fundations/containers/Wrapper.astro';
+import Grid from '../../components/fundations/containers/Grid.astro';
 import { shopTabs } from '../../data/products';
 import { getProducts } from '../../lib/content';
 
@@ -8,32 +11,44 @@ const products = await getProducts();
 ---
 
 <Page title="Shop | Jamn Good" description="Small batch homemade jams made with real fruit and simple ingredients.">
-  <section class="shop">
-    <img class="shop__botanical" src="/images/shop-botanical.png" alt="" width="205" height="290" />
+  <section>
+    <Wrapper variant="standard" class="flex flex-col gap-8 pt-48 pb-16">
+      <h1 class="max-w-5xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl text-foreground font-medium text-balance">
+        Small batch. Big flavor.
+      </h1>
+      <Text tag="p" variant="textLG" class="max-w-xl text-muted-foreground text-pretty">
+        Made with real fruit, simple ingredients, and a whole lotta love. Order online for local pickup.
+      </Text>
+    </Wrapper>
+  </section>
 
-    <div class="wrap">
-      <header class="page-head shop__head">
-        <p class="page-head__eyebrow eyebrow">Our Jams</p>
-        <h1 class="page-head__title">Small batch. Big flavor.</h1>
-        <p class="page-head__lede">Made with real fruit, simple ingredients, and a whole lotta love.</p>
-        <img class="ornament" src="/images/ornament.png" alt="" width="120" height="24" />
-      </header>
-
-      <div class="tabs" role="group" aria-label="Filter products">
+  <section>
+    <Wrapper variant="standard" class="flex flex-col gap-12 pb-24">
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filter products">
         {
           shopTabs.map((c, i) => (
-            <button type="button" class="tabs__tab" aria-pressed={i === 0 ? 'true' : 'false'} data-filter={c.id}>
+            <button
+              type="button"
+              aria-pressed={i === 0 ? 'true' : 'false'}
+              data-filter={c.id}
+              class="flex items-center h-9 px-4 text-sm font-medium duration-300 ease-out rounded-md cursor-pointer bg-muted text-foreground hover:bg-border aria-pressed:bg-foreground aria-pressed:text-background focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+            >
               {c.label}
             </button>
           ))
         }
       </div>
-
-      <div class="shop__grid" data-grid>
-        {products.map((p) => <ProductCard product={p} />)}
-      </div>
-      <p class="shop__empty" data-empty hidden>Nothing here right now — check back soon!</p>
-    </div>
+      <Grid class="gap-y-12" data-grid>
+        {
+          products.map((p, i) => (
+            <div class="col-span-12 sm:col-span-6 lg:col-span-4 [&:has(>[hidden])]:hidden">
+              <ProductCard product={p} eager={i < 3} />
+            </div>
+          ))
+        }
+      </Grid>
+      <p class="text-muted-foreground" data-empty hidden>Nothing here right now. Check back soon!</p>
+    </Wrapper>
   </section>
 </Page>
 
@@ -58,137 +73,3 @@ const products = await getProducts();
     }),
   );
 </script>
-
-<style>
-  .shop {
-    position: relative;
-    padding-bottom: 88px;
-  }
-
-  .shop__botanical {
-    position: absolute;
-    left: 0;
-    top: -82px;
-    width: 176px;
-    height: auto;
-    pointer-events: none;
-  }
-
-  .shop__head {
-    padding-top: 22px;
-  }
-
-  .tabs {
-    display: flex;
-    justify-content: space-between;
-    width: 520px;
-    height: 42px;
-    margin: 34px auto 0;
-    padding: 3px;
-    border: 1px solid rgba(150, 125, 95, 0.4);
-    border-radius: 21px;
-    background: rgba(255, 252, 245, 0.35);
-  }
-
-  .tabs__tab {
-    flex: 1;
-    border: 0;
-    border-radius: 18px;
-    background: none;
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 1.8px;
-    text-transform: uppercase;
-    color: #5b4e3f;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-  }
-
-  .tabs__tab:first-child {
-    flex: 0 0 88px;
-  }
-
-  .tabs__tab:hover {
-    color: var(--rust);
-  }
-
-  .tabs__tab[aria-pressed='true'] {
-    background: var(--rust-bg);
-    color: var(--cream);
-  }
-
-  /* flex rather than grid so a short last row sits centred */
-  .shop__grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 46px 33px;
-    max-width: 966px;
-    margin: 44px auto 0;
-  }
-
-  .shop__grid > :global(*) {
-    flex: 0 0 300px;
-  }
-
-  .shop__grid > :global([hidden]) {
-    display: none;
-  }
-
-  .shop__empty {
-    margin-top: 40px;
-    text-align: center;
-    color: var(--ink-soft);
-  }
-
-  @media (max-width: 1023px) {
-    .shop__botanical {
-      display: none;
-    }
-
-    .shop__head {
-      padding: 28px 16px 0;
-    }
-
-    .tabs {
-      width: auto;
-      max-width: 520px;
-      margin: 28px max(16px, calc(50% - 260px)) 0;
-    }
-
-    .tabs__tab {
-      font-size: 10.5px;
-      letter-spacing: 1px;
-    }
-
-    .tabs__tab:first-child {
-      flex-basis: 64px;
-    }
-
-    .shop__grid {
-      gap: 36px 20px;
-      padding: 0 16px;
-    }
-
-    .shop__grid > :global(*) {
-      flex-basis: min(300px, calc(50% - 10px));
-    }
-  }
-
-  @media (max-width: 560px) {
-    /* keep "Baked Goods" on one line on phones */
-    .tabs__tab {
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-
-    .tabs__tab:first-child {
-      flex-basis: 52px;
-    }
-
-    .shop__grid > :global(*) {
-      flex-basis: min(340px, 100%);
-    }
-  }
-</style>

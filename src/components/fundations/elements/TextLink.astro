@@ -1,0 +1,23 @@
+---
+// Icons
+import ChevronRight from "../icons/ChevronRight.astro";
+
+interface Props {
+  href: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, class: className, ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={["flex items-center gap-2 text-sm duration-200 w-fit text-foreground hover:text-muted-foreground group", className]}
+  {...rest}
+>
+  <slot />
+  <span class="flex items-center justify-center duration-200 rounded-full size-5 bg-foreground text-background group-hover:translate-x-0.5">
+    <ChevronRight size="xs" />
+  </span>
+</a>
