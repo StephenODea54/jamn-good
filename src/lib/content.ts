@@ -16,6 +16,9 @@ async function entries(collection: string, options: Record<string, unknown> = {}
 
 const blank = (v: unknown) => (v === null || v === undefined || v === '' ? undefined : v);
 
+/** EmDash stores booleans as 1/0. */
+const flag = (v: unknown) => v === true || v === 1;
+
 /** EmDash image field -> URL the browser can load. */
 function photo(value: Data | null | undefined, fallbackAlt: string): Photo | undefined {
   if (!value?.id) return undefined;
@@ -35,7 +38,8 @@ function toProduct(slug: string, d: Data): Product {
     price: Number(d.price ?? 0),
     kind: d.kind === 'baked' ? 'baked' : 'jam',
     limited: d.category === 'limited',
-    outOfStock: d.out_of_stock === true || d.out_of_stock === 1,
+    outOfStock: flag(d.out_of_stock),
+    preorder: flag(d.preorder) ? { closes: blank(d.preorder_closes) as string | undefined } : undefined,
     note: blank(d.note) as string | undefined,
     image: photo(d.image, alt),
     hero: photo(d.hero_image, alt),
@@ -52,14 +56,18 @@ function toProduct(slug: string, d: Data): Product {
   };
 }
 
+/** A pre-order past its closing time is gone from the site: shop, product page, cart and checkout. */
+const closed = (p: Product) => p.preorder?.closes !== undefined && Date.parse(p.preorder.closes) <= Date.now();
+
 export async function getProducts(): Promise<Product[]> {
-  return (await entries('products', BY_ORDER)).map(({ slug, data }) => toProduct(slug, data));
+  return (await entries('products', BY_ORDER)).map(({ slug, data }) => toProduct(slug, data)).filter((p) => !closed(p));
 }
 
 export async function getProduct(slug: string): Promise<Product | undefined> {
   const { entry, error } = await getEmDashEntry('products', slug);
   if (error) throw error;
-  return entry ? toProduct(entry.id as string, entry.data as Data) : undefined;
+  const product = entry ? toProduct(entry.id as string, entry.data as Data) : undefined;
+  return product && !closed(product) ? product : undefined;
 }
 
 /** Products shown in the homepage row, in their homepage position. */

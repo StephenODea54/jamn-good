@@ -9,7 +9,7 @@ Sign in at **`/_emdash/admin`**. Changes go live as soon as you **publish** them
 
 | Collection | What it controls |
 | --- | --- |
-| **Products** | Everything in the shop: name, price, type (jam or baked: picks the **Jams** or **Baked Goods** tab), whether it's a limited run (also lists it under **Limited**), **Out of stock** (shows a badge, turns Add to Cart into "Sold Out", and blocks checkout for it, even from carts that already have it), photos, description, ingredients, storage. **Homepage position** (1 to 4) puts a product in the homepage row; leave it blank to keep it off the homepage. **Shop order** sets the order on the Shop page. |
+| **Products** | Everything in the shop: name, price, type (jam or baked: picks the **Jams** or **Baked Goods** tab), whether it's a limited run (also lists it under **Limited**), **Out of stock** (shows a badge, turns Add to Cart into "Sold Out", and blocks checkout for it, even from carts that already have it), **Pre-order** (shows a Pre-order badge, says "Pre-order" on the button, and marks it "(pre-order)" on the Stripe receipt and the order) with **Pre-order: orders close** (shown on the product page in Ohio time; once it passes, the product disappears from the shop, homepage, its own page (404), carts and checkout, with no need to unpublish it; the date is ignored unless Pre-order is on), photos, description, ingredients, storage. **Homepage position** (1 to 4) puts a product in the homepage row; leave it blank to keep it off the homepage. **Shop order** sets the order on the Shop page. |
 | **Events** | Markets and craft shows on Where to Find Us. Past events hide themselves. |
 | **Stores** | Shops that carry Jamn Good. |
 | **FAQs** | Questions and answers on the FAQ page (answers support links). |
@@ -105,7 +105,7 @@ until you're ready to take real payments. Test card: `4242 4242 4242 4242`, any 
   pages, and lists two sitemaps: `/sitemap.xml` (EmDash: products and newsletters, from
   collections with SEO turned on) and `/sitemap-pages.xml` (the fixed pages; add new ones in
   `src/pages/sitemap-pages.xml.ts`).
-- Product pages include schema.org **Product** data (price, in stock / out of stock, photo); the
+- Product pages include schema.org **Product** data (price, in stock / out of stock / pre-order with its closing date, photo); the
   homepage includes **Organization** and **WebSite** data (name, logo, Youngstown, social links).
 - Products and Newsletters have EmDash's **SEO** panel for per-page titles/descriptions or
   hiding a page from search.

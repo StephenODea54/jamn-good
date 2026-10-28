@@ -85,7 +85,9 @@ export interface Product {
   category: "regular" | "limited";
   out_of_stock?: boolean;
   kind: "jam" | "baked";
+  preorder?: boolean;
   note?: string;
+  preorder_closes?: string;
   description?: string;
   ingredients?: string;
   storage?: string;

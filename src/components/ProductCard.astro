@@ -36,7 +36,7 @@ const url = productUrl(p);
         />
       )
     }
-    {p.outOfStock && <StockBadge />}
+    {p.outOfStock ? <StockBadge /> : p.preorder && <StockBadge>Pre-order</StockBadge>}
   </a>
   <div class="flex flex-col items-start gap-4">
     <div class="flex flex-col gap-1">
@@ -54,7 +54,7 @@ const url = productUrl(p);
         </Button>
       ) : (
         <Button variant="muted" size="sm" data-add-to-cart={p.slug}>
-          Add to cart
+          {p.preorder ? 'Pre-order' : 'Add to cart'}
         </Button>
       )
     }

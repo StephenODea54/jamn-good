@@ -16,6 +16,8 @@ export interface Product {
   limited: boolean;
   /** Toggled in EmDash: shows an Out of Stock badge and can't be added to the cart or bought */
   outOfStock: boolean;
+  /** Set for pre-order items. After `closes` (an ISO instant) the product is taken off the site. */
+  preorder?: { closes?: string };
   /** Short tag shown under the price, e.g. "(Limited)" */
   note?: string;
   /** Square-ish photo used on the shop grid, product cards and cart */
@@ -47,3 +49,14 @@ export const shopTabs: { id: 'all' | 'jam' | 'baked' | 'limited'; label: string 
 export const productUrl = (p: Pick<Product, 'slug'>) => `/shop/${p.slug}`;
 
 export const formatPrice = (n: number) => `$${n.toFixed(2)}`;
+
+const OHIO = { timeZone: 'America/New_York' } as const;
+
+/** When pre-orders close, in Ohio time: { day: "Fri, Nov 20", time: "11:59 PM" } */
+export function formatCloses(iso: string) {
+  const at = new Date(iso);
+  return {
+    day: at.toLocaleDateString('en-US', { ...OHIO, weekday: 'short', month: 'short', day: 'numeric' }),
+    time: at.toLocaleTimeString('en-US', { ...OHIO, hour: 'numeric', minute: '2-digit' }),
+  };
+}

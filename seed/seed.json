@@ -58,6 +58,16 @@
           "type": "boolean"
         },
         {
+          "slug": "preorder",
+          "label": "Pre-order (shows a Pre-order badge and the closing date)",
+          "type": "boolean"
+        },
+        {
+          "slug": "preorder_closes",
+          "label": "Pre-order: orders close (the product leaves the website after this)",
+          "type": "datetime"
+        },
+        {
           "slug": "category",
           "label": "Limited run? (also listed under the Limited tab)",
           "type": "select",

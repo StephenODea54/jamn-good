@@ -1,9 +1,9 @@
 ---
-// Out of stock is toggled per product in EmDash.
+// Badge over a product photo: "Out of stock" (toggled per product in EmDash) unless given other text.
 ---
 
 <span
   class="absolute flex items-center h-7 px-3 text-xs font-medium rounded-md pointer-events-none top-3 left-3 bg-foreground text-background"
 >
-  Out of stock
+  <slot>Out of stock</slot>
 </span>

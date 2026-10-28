@@ -54,7 +54,8 @@ export const POST: APIRoute = async ({ request, url }) => {
         currency: 'usd',
         unit_amount: Math.round(product.price * 100),
         product_data: {
-          name: product.name,
+          // The suffix carries through to the receipt, the order in EmDash and the new-order email.
+          name: product.preorder ? `${product.name} (pre-order)` : product.name,
           metadata: { slug },
           ...(publicOrigin && product.image && { images: [new URL(product.image.src, url.origin).href] }),
         },
