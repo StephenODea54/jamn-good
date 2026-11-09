@@ -1,0 +1,20 @@
+---
+// Five stars, filled up to `rating` (rounded to the nearest whole star). Hidden from screen
+// readers: put the rating in words next to it.
+interface Props {
+  rating: number;
+  class?: string;
+}
+const { rating, class: className } = Astro.props;
+const filled = Math.round(rating);
+---
+
+<span class:list={['flex gap-0.5 text-foreground', className]} aria-hidden="true">
+  {
+    Array.from({ length: 5 }, (_, i) => (
+      <svg viewBox="0 0 20 19" width="16" height="15" fill="currentColor" class:list={{ 'opacity-20': i >= filled }}>
+        <path d="m10 1 2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 14.8l-5.6 3.3 1.4-6.3L1 7.5l6.4-.6Z" />
+      </svg>
+    ))
+  }
+</span>

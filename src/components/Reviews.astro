@@ -1,0 +1,159 @@
+---
+// Reviews on a product page: the published reviews and a form for leaving one. New reviews are
+// drafts until the shop publishes them (see src/lib/reviews.ts).
+import Text from './fundations/elements/Text.astro';
+import Button from './fundations/elements/Button.astro';
+import Wrapper from './fundations/containers/Wrapper.astro';
+import Grid from './fundations/containers/Grid.astro';
+import Stars from './Stars.astro';
+import { LIMITS, type ReviewSummary } from '../lib/reviews';
+
+interface Props {
+  product: { slug: string; name: string };
+  summary: ReviewSummary;
+}
+const { product, summary } = Astro.props;
+const { reviews, average } = summary;
+
+const MESSAGES: Record<string, string> = {
+  thanks: 'Thank you! We read every review, and yours will show here once we have.',
+  invalid: 'Please pick a star rating and fill in your name and review.',
+  error: 'Something went wrong. Please try again.',
+};
+// Set when the form was submitted without JavaScript and redirected back here.
+const status = Astro.url.searchParams.get('review') ?? '';
+
+const date = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' });
+const stars = (n: number) => (n === 1 ? '1 star' : `${n} stars`);
+const label = 'text-sm font-medium text-foreground';
+const field =
+  'block w-full px-4 text-base border-0 rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:ring-0 focus:outline-2 focus:outline-offset-4 focus:outline-ring';
+---
+
+<section id="reviews" aria-labelledby="reviews-title">
+  <Wrapper variant="standard" class="pb-24">
+    <Grid class="gap-y-12">
+      <div class="flex flex-col col-span-12 gap-8 lg:col-span-7">
+        <div class="flex flex-col gap-3">
+          <Text id="reviews-title" tag="h2" variant="displaySM" class="tracking-tight text-foreground font-medium">Reviews</Text>
+          {
+            average !== undefined ? (
+              <p class="flex items-center gap-2 text-sm text-muted-foreground">
+                <Stars rating={average} />
+                <span>
+                  {average.toFixed(1)} out of 5 · {reviews.length === 1 ? '1 review' : `${reviews.length} reviews`}
+                </span>
+              </p>
+            ) : (
+              <Text tag="p" variant="textBase" class="text-muted-foreground text-pretty">
+                No reviews yet. Tried our {product.name.toLowerCase()}? We’d love to hear what you think.
+              </Text>
+            )
+          }
+        </div>
+        {
+          reviews.length > 0 && (
+            <ul class="flex flex-col gap-4">
+              {reviews.map((r) => (
+                <li class="flex flex-col gap-3 p-8 rounded-xl bg-muted">
+                  <p class="flex items-center gap-2">
+                    <Stars rating={r.rating} />
+                    <span class="sr-only">Rated {r.rating} out of 5</span>
+                  </p>
+                  <p class="text-base whitespace-pre-line text-foreground text-pretty">{r.text}</p>
+                  <p class="text-sm text-muted-foreground">
+                    {r.name}
+                    {r.date && (
+                      <>
+                        {' · '}
+                        <time datetime={r.date}>{date(r.date)}</time>
+                      </>
+                    )}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      <div class="col-span-12 lg:col-span-5">
+        <form class="flex flex-col gap-6 p-8 rounded-xl bg-muted" action="/api/review" method="post" data-review-form>
+          <Text tag="h3" variant="textLG" class="font-medium text-foreground">Write a review</Text>
+          <input type="hidden" name="product" value={product.slug} />
+          <fieldset>
+            <legend class:list={[label, 'mb-2']}>Your rating</legend>
+            <div class="star-input">
+              {
+                [1, 2, 3, 4, 5].map((n) => (
+                  <label>
+                    <input type="radio" name="rating" value={n} required class="sr-only" />
+                    <svg viewBox="0 0 20 19" width="28" height="27" fill="currentColor" aria-hidden="true">
+                      <path d="m10 1 2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 14.8l-5.6 3.3 1.4-6.3L1 7.5l6.4-.6Z" />
+                    </svg>
+                    <span class="sr-only">{stars(n)}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+          <div class="flex flex-col gap-2">
+            <label for="r-name" class={label}>First name</label>
+            <input id="r-name" name="name" type="text" autocomplete="given-name" maxlength={LIMITS.name} required class:list={[field, 'h-11']} />
+            <p class="text-sm text-muted-foreground">Shown with your review.</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="r-text" class={label}>Your review</label>
+            <textarea id="r-text" name="text" rows="5" maxlength={LIMITS.text} required class:list={[field, 'py-3 resize-none']}></textarea>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="r-email" class={label}>Email (optional)</label>
+            <input id="r-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" class:list={[field, 'h-11']} />
+            <p class="text-sm text-muted-foreground">Never shown. Only so we can reach you if something wasn’t right.</p>
+          </div>
+          <div class="absolute -left-[9999px]" aria-hidden="true">
+            <label for="r-website">Leave this empty</label>
+            <input id="r-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          <Button type="submit" variant="primary" size="md" class="w-fit">Submit review</Button>
+          <p
+            class="text-sm empty:hidden text-muted-foreground data-[tone=error]:text-accent"
+            role="status"
+            data-review-status
+            data-tone={status === 'invalid' || status === 'error' ? 'error' : undefined}
+          >{MESSAGES[status]}</p>
+        </form>
+      </div>
+    </Grid>
+  </Wrapper>
+</section>
+
+<script>
+  const MESSAGES: Record<string, string> = {
+    thanks: 'Thank you! We read every review, and yours will show here once we have.',
+    invalid: 'Please pick a star rating and fill in your name and review.',
+    error: 'Something went wrong. Please try again.',
+  };
+  const form = document.querySelector<HTMLFormElement>('[data-review-form]');
+  const statusEl = document.querySelector<HTMLElement>('[data-review-status]');
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    button.disabled = true;
+    let status = 'error';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { accept: 'application/json' } });
+      status = (await res.json()).status ?? 'error';
+    } catch {
+      // network error: keep 'error'
+    }
+    button.disabled = false;
+    if (statusEl) {
+      statusEl.textContent = MESSAGES[status] ?? MESSAGES.error;
+      if (status === 'invalid' || status === 'error') statusEl.dataset.tone = 'error';
+      else delete statusEl.dataset.tone;
+    }
+    if (status === 'thanks') form.reset();
+  });
+</script>

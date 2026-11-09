@@ -107,6 +107,24 @@ export interface Product {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface Review {
+  id: string;
+  slug: string | null;
+  status: string;
+  name: string;
+  product: string;
+  rating: number;
+  text: string;
+  email?: string;
+  submitted_at?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface SiteDetail {
   id: string;
   slug: string | null;
@@ -178,6 +196,7 @@ declare module "emdash" {
     newsletters: Newsletter;
     orders: Order;
     products: Product;
+    reviews: Review;
     site_details: SiteDetail;
     stores: Store;
     subscribers: Subscriber;

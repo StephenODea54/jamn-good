@@ -8,7 +8,10 @@ import Wrapper from '../../components/fundations/containers/Wrapper.astro';
 import Grid from '../../components/fundations/containers/Grid.astro';
 import { formatCloses, formatPrice } from '../../data/products';
 import { getProduct, getProducts } from '../../lib/content';
+import { getReviews } from '../../lib/reviews';
 import { returnPolicy } from '../../lib/structured-data';
+import Reviews from '../../components/Reviews.astro';
+import Stars from '../../components/Stars.astro';
 
 const product = await getProduct(Astro.params.slug ?? '');
 if (!product) {
@@ -25,14 +28,15 @@ const related = [
 ].slice(0, 3);
 
 const hero = product.hero ?? product.image;
-const { rating } = product;
+const reviewSummary = await getReviews(product.slug);
+const { reviews, average } = reviewSummary;
 const facts = [
   { label: 'Ingredients', text: product.ingredients },
   { label: 'Storage and shelf life', text: product.storage },
 ].filter((f): f is { label: string; text: string } => Boolean(f.text));
 const closes = product.preorder?.closes && formatCloses(product.preorder.closes);
 
-// Product details for search results (price and whether it's in stock).
+// Product details for search results (price, whether it's in stock, and the published reviews).
 const origin = (Astro.site ?? Astro.url).origin;
 const pageUrl = new URL(Astro.url.pathname, origin).href;
 const jsonLd = {
@@ -43,6 +47,22 @@ const jsonLd = {
   sku: product.slug,
   brand: { '@type': 'Brand', name: 'Jamn Good' },
   ...(hero && { image: [new URL(hero.src, origin).href] }),
+  ...(average !== undefined && {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: average.toFixed(1),
+      reviewCount: reviews.length,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    review: reviews.slice(0, 10).map((r) => ({
+      '@type': 'Review',
+      author: { '@type': 'Person', name: r.name },
+      ...(r.date && { datePublished: r.date.slice(0, 10) }),
+      reviewBody: r.text,
+      reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+    })),
+  }),
   offers: {
     '@type': 'Offer',
     url: pageUrl,
@@ -92,18 +112,12 @@ const jsonLd = {
               {product.note ? `${formatPrice(product.price)} ${product.note}` : formatPrice(product.price)}
             </Text>
             {
-              rating !== undefined && (
-                <p class="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span class="flex gap-0.5 text-foreground" aria-hidden="true">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <svg viewBox="0 0 20 19" width="16" height="15" fill="currentColor" class:list={{ 'opacity-20': i >= rating }}>
-                        <path d="m10 1 2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 14.8l-5.6 3.3 1.4-6.3L1 7.5l6.4-.6Z" />
-                      </svg>
-                    ))}
-                  </span>
-                  <span class="sr-only">Rated {rating} out of 5,</span>
-                  {product.reviews !== undefined && <span>({product.reviews} reviews)</span>}
-                </p>
+              average !== undefined && (
+                <a href="#reviews" class="flex items-center gap-2 text-sm duration-200 w-fit text-muted-foreground hover:text-foreground">
+                  <Stars rating={average} />
+                  <span class="sr-only">Rated {average.toFixed(1)} out of 5,</span>
+                  <span>({reviews.length === 1 ? '1 review' : `${reviews.length} reviews`})</span>
+                </a>
               )
             }
           </div>
@@ -151,6 +165,8 @@ const jsonLd = {
       </Grid>
     </Wrapper>
   </section>
+
+  <Reviews product={product} summary={reviewSummary} />
 
   <section aria-labelledby="related-title">
     <Wrapper variant="standard" class="py-24">

@@ -51,8 +51,6 @@ function toProduct(slug: string, d: Data): Product {
     description: d.description ?? '',
     ingredients: blank(d.ingredients) as string | undefined,
     storage: blank(d.storage) as string | undefined,
-    rating: blank(d.rating) as number | undefined,
-    reviews: blank(d.reviews) as number | undefined,
   };
 }
 

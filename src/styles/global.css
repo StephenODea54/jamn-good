@@ -83,3 +83,39 @@
     animation: none;
   }
 }
+
+/* Star picker in the review form: five radio buttons drawn as stars, filled up to the one picked
+   (or the one under the pointer) */
+@layer components {
+  .star-input {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .star-input label {
+    cursor: pointer;
+    padding: 2px;
+    border-radius: var(--radius-md);
+    color: var(--color-foreground);
+  }
+
+  .star-input svg {
+    opacity: 0.2;
+    transition: opacity 150ms;
+  }
+
+  .star-input label:has(input:focus-visible) {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  .star-input:has(input[value='1']:checked) label:nth-child(-n + 1) svg,
+  .star-input:has(input[value='2']:checked) label:nth-child(-n + 2) svg,
+  .star-input:has(input[value='3']:checked) label:nth-child(-n + 3) svg,
+  .star-input:has(input[value='4']:checked) label:nth-child(-n + 4) svg,
+  .star-input:has(input[value='5']:checked) label:nth-child(-n + 5) svg,
+  .star-input label:hover svg,
+  .star-input label:has(~ label:hover) svg {
+    opacity: 1;
+  }
+}

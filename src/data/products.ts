@@ -31,11 +31,9 @@ export interface Product {
   /** Position in the homepage row; products without one are not featured */
   homePosition?: number;
   description: string;
-  /** The facts block and star rating only show when these are filled in */
+  /** The facts block only shows when these are filled in */
   ingredients?: string;
   storage?: string;
-  rating?: number;
-  reviews?: number;
 }
 
 /** Shop page tabs. Jams and Baked Goods filter by type; Limited shows anything marked limited. */

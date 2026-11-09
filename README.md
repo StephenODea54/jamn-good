@@ -16,6 +16,7 @@ Sign in at **`/_emdash/admin`**. Changes go live as soon as you **publish** them
 | **Treats** | Baked goods listed in the homepage Cookies & Treats section. |
 | **Site Details** | Contact email and social links. The Instagram/Facebook links only appear when their URL is filled in. |
 | **Newsletter Subscribers** | Everyone who joined through the "Stay in the Loop" form, with when and where they signed up. Private; never shown on the site. Export them to an email service when you start sending newsletters. |
+| **Reviews** | Reviews from the form on each product page. They arrive as drafts with an email to the Site Details address; **publish** one to show it on its product page (stars, average and the review) and to Google. Delete spam, but keep honest reviews even when they are negative (the FTC rules on reviews forbid hiding bad ones). The reviewer's email is private. |
 
 Ratings, review counts, ingredients and storage are optional. If they're blank, that part of the
 product page is hidden.
@@ -107,7 +108,9 @@ until you're ready to take real payments. Test card: `4242 4242 4242 4242`, any 
   `src/pages/sitemap-pages.xml.ts`).
 - Product pages include schema.org **Product** data (price, in stock / out of stock / pre-order with its closing date, photo); the
   homepage includes **Organization** and **WebSite** data (name, logo, Youngstown, social links).
-- Both carry the return policy (no returns, matching the "Can I return my order?" FAQ), from
+- Product pages with published reviews also include **AggregateRating** and **Review** data (up to
+  10 reviews), so Google can show stars. Only real, published reviews go in: never type in ratings.
+- The Product and Organization data both carry the return policy (no returns, matching the "Can I return my order?" FAQ), from
   `src/lib/structured-data.ts`. If the policy changes, update that file and the FAQ. There is no shipping data on purpose: orders
   are pickup only, so Search Console will keep warning that `shippingDetails` is missing.
 - Products and Newsletters have EmDash's **SEO** panel for per-page titles/descriptions or
