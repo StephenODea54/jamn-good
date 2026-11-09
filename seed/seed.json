@@ -929,6 +929,51 @@
         }
       },
       {
+        "id": "faq-8",
+        "slug": "can-i-return-my-order",
+        "status": "published",
+        "data": {
+          "question": "Can I return my order?",
+          "answer": [
+            {
+              "_type": "block",
+              "_key": "kw",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "kx",
+                  "href": "/contact"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ky",
+                  "text": "Because it’s food, we can’t accept returns. But if something isn’t right with your order, ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "kz",
+                  "text": "get in touch",
+                  "marks": [
+                    "kx"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "la",
+                  "text": " within 7 days and we’ll replace it or give you a refund.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "sort_order": 55
+        }
+      },
+      {
         "id": "faq-6",
         "slug": "do-you-offer-wholesale",
         "status": "published",

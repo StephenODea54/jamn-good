@@ -107,6 +107,9 @@ until you're ready to take real payments. Test card: `4242 4242 4242 4242`, any 
   `src/pages/sitemap-pages.xml.ts`).
 - Product pages include schema.org **Product** data (price, in stock / out of stock / pre-order with its closing date, photo); the
   homepage includes **Organization** and **WebSite** data (name, logo, Youngstown, social links).
+- Both carry the return policy (no returns, matching the "Can I return my order?" FAQ), from
+  `src/lib/structured-data.ts`. If the policy changes, update that file and the FAQ. There is no shipping data on purpose: orders
+  are pickup only, so Search Console will keep warning that `shippingDetails` is missing.
 - Products and Newsletters have EmDash's **SEO** panel for per-page titles/descriptions or
   hiding a page from search.
 - Submit both sitemaps in Google Search Console and Bing Webmaster Tools.

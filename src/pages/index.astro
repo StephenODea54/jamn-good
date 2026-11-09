@@ -9,6 +9,7 @@ import FindUs from '../components/FindUs.astro';
 import Closing from '../components/Closing.astro';
 import Newsletter from '../components/Newsletter.astro';
 import { getSiteDetails } from '../lib/content';
+import { returnPolicy } from '../lib/structured-data';
 
 // Tells search engines who the business is (name, logo, location, social profiles).
 const site = await getSiteDetails();
@@ -31,6 +32,7 @@ const jsonLd = [
     description: 'Small batch homemade jams made with real fruit, simple ingredients, and a whole lotta love.',
     address: { '@type': 'PostalAddress', addressLocality: 'Youngstown', addressRegion: 'OH', postalCode: '44515', addressCountry: 'US' },
     sameAs: [site.instagram, site.facebook].filter(Boolean),
+    hasMerchantReturnPolicy: returnPolicy(origin),
   },
 ];
 ---

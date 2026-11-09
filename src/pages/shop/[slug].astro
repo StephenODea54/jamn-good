@@ -8,6 +8,7 @@ import Wrapper from '../../components/fundations/containers/Wrapper.astro';
 import Grid from '../../components/fundations/containers/Grid.astro';
 import { formatCloses, formatPrice } from '../../data/products';
 import { getProduct, getProducts } from '../../lib/content';
+import { returnPolicy } from '../../lib/structured-data';
 
 const product = await getProduct(Astro.params.slug ?? '');
 if (!product) {
@@ -54,6 +55,7 @@ const jsonLd = {
         : 'https://schema.org/InStock',
     ...(product.preorder?.closes && { availabilityEnds: product.preorder.closes }),
     itemCondition: 'https://schema.org/NewCondition',
+    hasMerchantReturnPolicy: returnPolicy(origin),
   },
 };
 
